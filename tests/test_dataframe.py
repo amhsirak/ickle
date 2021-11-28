@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.testing import assert_array_equal
 import pytest
 import ickle as ick
 
@@ -40,3 +41,11 @@ class TestDataFrameCreation:
         # Correct construction. No errors.
         ick.DataFrame({'a': np.array([1, 2]), 
                         'b': np.array([5, 10])})
+
+    def test_unicode_to_object(self):
+        a_object = a.astype('O')
+        assert_array_equal(df._data['a'], a_object)
+        assert_array_equal(df._data['b'], b)
+        assert_array_equal(df._data['c'], c)
+        assert_array_equal(df._data['d'], d)
+        assert_array_equal(df._data['e'], e)
