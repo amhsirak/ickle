@@ -17,6 +17,9 @@ class DataFrame:
         # Check for correct input types
         self._check_input_types(data)
 
+        # Check for equal array lengths
+        self._check_array_lengths(data)
+
     def _check_input_types(self,data):
         if not isinstance(data, dict):
             raise TypeError('`data` can accept only dictionaries')
@@ -27,4 +30,13 @@ class DataFrame:
                 raise TypeError('values of `data` must be NumPy arrays')
             if value.ndim != 1:
                 raise ValueError('values of `data` must be some one-dimensional array')
+    
+    # Each column of data in the DataFrame must have the same number of elements.
+    def _check_array_lengths(self,data):
+        for i,value in enumerate(data.values()):
+            if i == 0:
+                length = len(value)
+            elif length != len(value):
+                raise ValueError('All arrays must be of the same length')
+
 
