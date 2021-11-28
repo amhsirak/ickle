@@ -26,8 +26,17 @@ class TestDataFrameCreation:
             ick.DataFrame({'a': np.array([1]), 
                            'b': np.array([[1]])})
 
-        # Correct constuction of the data frame. No errors.
+        # Correct constuction of the dataframe. No errors.
         ick.DataFrame({
                 'a': np.array([1]), 
                 'b': np.array([100])
             })
+    
+    def test_array_length(self):
+        with pytest.raises(ValueError):
+            ick.DataFrame({'a': np.array([1,2]),
+                        'b': np.array([1])})
+        
+        # Correct construction. No errors.
+        ick.DataFrame({'a': np.array([1, 2]), 
+                        'b': np.array([5, 10])})
