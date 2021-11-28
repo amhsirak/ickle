@@ -14,6 +14,9 @@ class DataFrame:
         become the column name.
         """
 
+        # Check for correct input types
+        self._check_input_types(data)
+
     def _check_input_types(self,data):
         if not isinstance(data, dict):
             raise TypeError('`data` can accept only dictionaries')
