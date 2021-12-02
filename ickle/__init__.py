@@ -22,7 +22,7 @@ class DataFrame:
         self._check_array_lengths(data)
 
         # Convert unicode arrays to objects
-        self._convert_unicode_to_object(data)
+        self._data = self._convert_unicode_to_object(data)
 
     def _check_input_types(self,data):
         if not isinstance(data, dict):
@@ -53,3 +53,10 @@ class DataFrame:
                 new_data[key] = value
         return new_data
 
+    def __len__(self):
+        """
+        Make the built-in `len` function work with our dataframe
+        Returns:
+        int: The number of rows in the dataframe
+        """
+        return len(next(iter(self._data.values())))
