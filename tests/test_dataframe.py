@@ -49,3 +49,6 @@ class TestDataFrameCreation:
         assert_array_equal(df._data['c'], c)
         assert_array_equal(df._data['d'], d)
         assert_array_equal(df._data['e'], e)
+
+    def test_len(self):
+        assert len(df) == 3
