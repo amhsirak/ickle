@@ -76,3 +76,35 @@ class DataFrame:
         """
         # if you iterate through a dict, you only get the keys and not the values.
         return list(self._data)
+
+    @columns.setter
+    def columns(self, columns):
+        """
+        Must supply a list of columns as strings the same length as the current DataFrame
+
+        Parameters
+        columns: list of strings
+
+        Returns
+        None
+        """
+        if not isinstance(columns, list):
+            raise TypeError('`columns` must be a list')
+        if len(columns) != len(self._data):
+            raise ValueError('Newly created `columns` must have the same length as the current DataFrame')
+        for col in columns:
+            if not isinstance(col, str):
+                raise TypeError('All column names must be of type str')
+        if len(columns) != len(set(columns)):
+            raise ValueError('`columns` cannot have duplicates')
+        # updating _data
+        new_data = dict(zip(columns, self._data.values()))
+        self._data = new_data
+
+    @property
+    def shape(self):
+        """
+        Returns
+        Two-item tuple of no. of rows and columns
+        """
+        return len(self), len(self._data) 
