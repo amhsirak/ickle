@@ -49,3 +49,33 @@ class TestDataFrameCreation:
         assert_array_equal(df._data['c'], c)
         assert_array_equal(df._data['d'], d)
         assert_array_equal(df._data['e'], e)
+
+    def test_len(self):
+        # The assert keyword lets you test if a condition in your code returns True, if not, the program will raise an AssertionError.
+        assert len(df) == 3
+
+    def test_columns(self):
+        assert df.columns == ['a', 'b', 'c', 'd', 'e']
+    
+    def test_set_columns(self):
+        with pytest.raises(TypeError):
+            df.columns = 5
+
+        with pytest.raises(ValueError):
+            df.columns = ['a', 'b']
+
+        with pytest.raises(TypeError):
+            df.columns = [1, 2, 3, 4, 5]
+
+        with pytest.raises(ValueError):
+            df.columns = ['f', 'f', 'g', 'h', 'i']
+
+        df.columns = ['f', 'g', 'h', 'i', 'j']
+        assert df.columns == ['f', 'g', 'h', 'i', 'j']
+
+        # set it back
+        df.columns = ['a', 'b', 'c', 'd', 'e']
+        assert df.columns == ['a', 'b', 'c', 'd', 'e']
+
+    def test_shape(self):
+        assert df.shape == (3, 5)

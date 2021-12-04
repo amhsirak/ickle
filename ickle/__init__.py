@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.testing import assert_array_equal
 
 __version__ = '0.0.1'
 
@@ -22,7 +21,7 @@ class DataFrame:
         self._check_array_lengths(data)
 
         # Convert unicode arrays to objects
-        self._convert_unicode_to_object(data)
+        self._data = self._convert_unicode_to_object(data)
 
     def _check_input_types(self,data):
         if not isinstance(data, dict):
@@ -53,3 +52,59 @@ class DataFrame:
                 new_data[key] = value
         return new_data
 
+    def __len__(self):
+        """
+        Make the built-in `len` function work with our dataframe
+        Returns:
+        int: The number of rows in the dataframe
+        """
+        # Alternative Way:
+        # for value in self._data.values():
+            # value is a NumPy array and they already work with the `len` function
+            # return len(value)
+        return len(next(iter(self._data.values())))
+
+    @property
+    def columns(self):
+        """
+        _data holds column names mapped to arrays
+        Dictionaries are ordered from Python 3.6+
+        Hence using that to put columns in correct order in list
+
+        Returns
+        list of column names
+        """
+        # if you iterate through a dict, you only get the keys and not the values.
+        return list(self._data)
+
+    @columns.setter
+    def columns(self, columns):
+        """
+        Must supply a list of columns as strings the same length as the current DataFrame
+
+        Parameters
+        columns: list of strings
+
+        Returns
+        None
+        """
+        if not isinstance(columns, list):
+            raise TypeError('`columns` must be a list')
+        if len(columns) != len(self._data):
+            raise ValueError('Newly created `columns` must have the same length as the current DataFrame')
+        for col in columns:
+            if not isinstance(col, str):
+                raise TypeError('All column names must be of type str')
+        if len(columns) != len(set(columns)):
+            raise ValueError('`columns` cannot have duplicates')
+        # updating _data
+        new_data = dict(zip(columns, self._data.values()))
+        self._data = new_data
+
+    @property
+    def shape(self):
+        """
+        Returns
+        Two-item tuple of no. of rows and columns
+        """
+        return len(self), len(self._data) 
