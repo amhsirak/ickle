@@ -56,3 +56,26 @@ class TestDataFrameCreation:
 
     def test_columns(self):
         assert df.columns == ['a', 'b', 'c', 'd', 'e']
+    
+    def test_set_columns(self):
+        with pytest.raises(TypeError):
+            df.columns = 5
+
+        with pytest.raises(ValueError):
+            df.columns = ['a', 'b']
+
+        with pytest.raises(TypeError):
+            df.columns = [1, 2, 3, 4, 5]
+
+        with pytest.raises(ValueError):
+            df.columns = ['f', 'f', 'g', 'h', 'i']
+
+        df.columns = ['f', 'g', 'h', 'i', 'j']
+        assert df.columns == ['f', 'g', 'h', 'i', 'j']
+
+        # set it back
+        df.columns = ['a', 'b', 'c', 'd', 'e']
+        assert df.columns == ['a', 'b', 'c', 'd', 'e']
+
+    def test_shape(self):
+        assert df.shape == (3, 5)
