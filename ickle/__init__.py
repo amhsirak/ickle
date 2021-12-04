@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.testing import assert_array_equal
 
 __version__ = '0.0.1'
 
@@ -59,4 +58,21 @@ class DataFrame:
         Returns:
         int: The number of rows in the dataframe
         """
+        # Alternative Way:
+        # for value in self._data.values():
+            # value is a NumPy array and they already work with the `len` function
+            # return len(value)
         return len(next(iter(self._data.values())))
+
+    @property
+    def columns(self):
+        """
+        _data holds column names mapped to arrays
+        Dictionaries are ordered from Python 3.6+
+        Hence using that to put columns in correct order in list
+
+        Returns
+        list of column names
+        """
+        # if you iterate through a dict, you only get the keys and not the values.
+        return list(self._data)
