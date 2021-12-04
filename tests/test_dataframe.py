@@ -51,4 +51,8 @@ class TestDataFrameCreation:
         assert_array_equal(df._data['e'], e)
 
     def test_len(self):
+        # The assert keyword lets you test if a condition in your code returns True, if not, the program will raise an AssertionError.
         assert len(df) == 3
+
+    def test_columns(self):
+        assert df.columns == ['a', 'b', 'c', 'd', 'e']
