@@ -107,4 +107,47 @@ class DataFrame:
         Returns
         Two-item tuple of no. of rows and columns
         """
-        return len(self), len(self._data) 
+        return len(self), len(self._data)
+
+    # ToDo: Complete this method
+    def _repr_html_(self):
+        """
+        Used to create a string of HTML to nicely display the DataFrame in a Jupyter Notebook.
+        Different string formatting is used for different data types.
+
+        The structure of HTML is as follows:
+        <table>
+            <thead>
+                <tr>
+                    <th>data</th>
+                    ...
+                    <th>data</th>
+                </tr>
+            <//thead>
+            <tbody>
+                <tr>
+                    <td><strong>{i}</strong></td>
+                    <td>data</td>
+                    ...
+                    <td>data</td>
+                </tr>
+                ...
+                <tr>
+                    <td><strong>{i}</strong></td>
+                    <td>data</td>
+                    ...
+                    <td>data</td>
+                </tr>
+            </tbody>
+        </table>
+        """
+        pass
+
+    @property
+    def values(self):
+        """
+        Returns
+        A single 2D NumPy array of all the columns of data. 
+        """
+        # https://numpy.org/doc/stable/reference/generated/numpy.column_stack.html
+        return np.column_stack(list(self._data.values()))
