@@ -79,3 +79,7 @@ class TestDataFrameCreation:
 
     def test_shape(self):
         assert df.shape == (3, 5)
+    
+    def test_values(self):
+        values = np.column_stack((a,b,c,d,e))
+        assert_array_equal(df.values, values)
