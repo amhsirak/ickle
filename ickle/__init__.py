@@ -176,3 +176,23 @@ class DataFrame:
         new_data = {'Column Name': col_names, 'Data Type': np.array(dtypes)}
 
         return DataFrame(new_data)
+
+    def __getitem__(self, item):
+        """
+        Use the brackets operator to simutaneously select rows and columns
+
+        A single string selects one column -> df['colname']
+        A list of strings selects multiple columns -> df[['colname1','colname2']]
+        A one column DataFrame of boolean that filters rows -> df[df_bool]
+
+        Row and column selection simultaneously -> df[rs, cs]
+            where cs and rs can be integers, slices, or a list of integers
+            rs can also be a one-column boolean DataFrame
+
+        Returns
+        -------
+        A subset of the original DataFrame
+        """
+        # select a single column -> df['colname']
+        if isinstance(item, str):
+            return DataFrame({item: self._data[item]})
