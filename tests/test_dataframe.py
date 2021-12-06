@@ -1,5 +1,6 @@
 import numpy as np
 from numpy.testing import assert_array_equal
+from tests import assert_df_equals
 import pytest
 import ickle as ick
 
@@ -10,6 +11,7 @@ b = np.array(['c', 'd', None])
 c = np.random.rand(3)
 d = np.array([True, False, True])
 e = np.array([1, 2, 3])
+
 df = ick.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
 
 class TestDataFrameCreation:
@@ -51,7 +53,8 @@ class TestDataFrameCreation:
         assert_array_equal(df._data['e'], e)
 
     def test_len(self):
-        # The assert keyword lets you test if a condition in your code returns True, if not, the program will raise an AssertionError.
+        # The assert keyword lets you test if a condition in your code returns True.
+        # If not, the program will raise an AssertionError.
         assert len(df) == 3
 
     def test_columns(self):
@@ -83,3 +86,12 @@ class TestDataFrameCreation:
     def test_values(self):
         values = np.column_stack((a,b,c,d,e))
         assert_array_equal(df.values, values)
+
+    def test_dtypes(self):
+        cols = np.array(['a', 'b', 'c', 'd', 'e'], dtype='O')
+        dtypes = np.array(['string', 'string', 'float', 'bool', 'int'], dtype='O')
+
+        df_result = df.dtypes
+        df_answer = ick.DataFrame({'Column Name': cols, 'Data Type': dtypes})
+
+        assert_df_equals(df_result, df_answer)
