@@ -10,6 +10,7 @@ class DataFrame:
         Create it by passing a dictionary of NumPy arrays to the values parameter.
 
         Parameters
+        -------
         1. data (dict): A dictionary of strings mapped to NumPy arrays. The key will
         become the column name.
         """
@@ -55,7 +56,8 @@ class DataFrame:
     def __len__(self):
         """
         Make the built-in `len` function work with our dataframe
-        Returns:
+        Returns
+        -------
         int: The number of rows in the dataframe
         """
         # Alternative Way:
@@ -72,6 +74,7 @@ class DataFrame:
         Hence using that to put columns in correct order in list
 
         Returns
+        -------
         list of column names
         """
         # if you iterate through a dict, you only get the keys and not the values.
@@ -83,9 +86,11 @@ class DataFrame:
         Must supply a list of columns as strings the same length as the current DataFrame
 
         Parameters
+        -------
         columns: list of strings
 
         Returns
+        -------
         None
         """
         if not isinstance(columns, list):
@@ -105,6 +110,7 @@ class DataFrame:
     def shape(self):
         """
         Returns
+        -------
         Two-item tuple of no. of rows and columns
         """
         return len(self), len(self._data)
@@ -147,7 +153,26 @@ class DataFrame:
     def values(self):
         """
         Returns
+        -------
         A single 2D NumPy array of all the columns of data. 
         """
         # https://numpy.org/doc/stable/reference/generated/numpy.column_stack.html
         return np.column_stack(list(self._data.values()))
+
+    @property
+    def dtypes(self):
+        """
+        Returns
+        -------
+        A two-column DataFrame of column names in one column and their data type in the other
+        """
+        DTYPE_NAME = {'O': 'string', 'i': 'int', 'f': 'float', 'b': 'bool'}
+        col_names = np.array(self.columns)
+        dtypes = []
+        for value in self._data.values():
+            kind = value.dtype.kind
+            dtype = DTYPE_NAME[kind]
+            dtypes.append(dtype)
+        new_data = {'Column Name': col_names, 'Data Type': np.array(dtypes)}
+
+        return DataFrame(new_data)
