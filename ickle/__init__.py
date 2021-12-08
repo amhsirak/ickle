@@ -196,3 +196,7 @@ class DataFrame:
         # select a single column -> df['colname']
         if isinstance(item, str):
             return DataFrame({item: self._data[item]})
+        
+        # select multiple columns -> df[['colname1', 'colname2' ]]
+        if isinstance(item, list):
+            return DataFrame({col: self._data[col] for col in item})
