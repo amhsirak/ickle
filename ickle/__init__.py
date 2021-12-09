@@ -1,3 +1,4 @@
+from typing import Type
 import numpy as np
 
 __version__ = '0.0.1'
@@ -200,3 +201,17 @@ class DataFrame:
         # select multiple columns -> df[['colname1', 'colname2' ]]
         if isinstance(item, list):
             return DataFrame({col: self._data[col] for col in item})
+        
+        # boolean selection -> df['height'] > 5.5
+        if isinstance(item, DataFrame):
+            if item.shape[1] != 1:
+                raise ValueError('Only pass a single- column DataFrame for selection')
+            # _data.values()[0] cannot be used as
+            # 'dict_values' doesn't allow indexing
+            arr = next(iter(item._data.values()))
+            if arr.dtype.kind != 'b':
+                raise ValueError('item must be a one-column boolean DataFrame')
+            # value[arr] -> NumPy does boolean selection. 
+            return DataFrame({col: value[arr] for col, value in self._data.items()})
+
+
