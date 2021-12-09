@@ -100,3 +100,9 @@ class TestSelection:
     def test_one_column(self):
         assert_array_equal(df['a'].values[:, 0], a)
         assert_array_equal(df['c'].values[:, 0], c)
+
+    def test_multiple_columns(self):
+        cols = ['a', 'b']
+        df_result = df[cols]
+        df_answer = ick.DataFrame({'a': a, 'b': b})
+        assert_df_equals(df_result, df_answer)
