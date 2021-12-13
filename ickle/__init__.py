@@ -176,3 +176,86 @@ class DataFrame:
         new_data = {'Column Name': col_names, 'Data Type': np.array(dtypes)}
 
         return DataFrame(new_data)
+
+    def __getitem__(self, item):
+        """
+        Use the brackets operator to simutaneously select rows and columns
+
+        A single string selects one column -> df['colname']
+        A list of strings selects multiple columns -> df[['colname1','colname2']]
+        A one column DataFrame of boolean that filters rows -> df[df_bool]
+
+        Row and column selection simultaneously -> df[rs, cs]
+            where cs and rs can be integers, slices, or a list of integers
+            rs can also be a one-column boolean DataFrame
+
+        Returns
+        -------
+        A subset of the original DataFrame
+        """
+        # select a single column -> df['colname']
+        if isinstance(item, str):
+            return DataFrame({item: self._data[item]})
+        
+        # select multiple columns -> df[['colname1', 'colname2' ]]
+        if isinstance(item, list):
+            return DataFrame({col: self._data[col] for col in item})
+        
+        # boolean selection -> df['height'] > 5.5
+        if isinstance(item, DataFrame):
+            if item.shape[1] != 1:
+                raise ValueError('Only pass a single- column DataFrame for selection')
+            # _data.values()[0] cannot be used as
+            # 'dict_values' doesn't allow indexing
+            arr = next(iter(item._data.values()))
+            if arr.dtype.kind != 'b':
+                raise ValueError('item must be a one-column boolean DataFrame')
+            # value[arr] -> NumPy does boolean selection. 
+            return DataFrame({col: value[arr] for col, value in self._data.items()})
+        
+        if isinstance(item, tuple):
+            return self._getitem_tuple(item)
+        else:
+            raise TypeError('Selection can be made only with a string, a list or a tuple')
+
+    def _getitem_tuple(self, item):
+        # simultaneous selection of rows and columns -> df[row, col]
+        if len(item) != 2:
+            raise ValueError('Pass either a single string or a two-item tuple inside the selection operator.')
+        row_selection, col_selection = item
+
+        if isinstance(row_selection, int):
+            row_selection = [row_selection]
+
+        # df[df['a'] < 10, 'b']
+        elif isinstance(row_selection, DataFrame):
+            if row_selection.shape[1] != 1:
+                raise ValueError('Can only pass a one column DataFrame for selection')
+            row_selection = next(iter(row_selection._data.values()))
+            if row_selection.dtype.kind != 'b':
+                raise TypeError('DataFrame must be a boolean')
+            elif not isinstance(row_selection, (list, slice)):
+                raise TypeError('Row selection must be either an int, slice, list, or DataFrame')
+        
+
+        if isinstance(col_selection, int):
+            col_selection = [self.columns[col_selection]]
+        elif isinstance(col_selection, str):
+            col_selection = [col_selection]
+        
+        new_data = {}
+        for col in col_selection:
+            new_data[col] = self._data[col][row_selection]
+        
+        return DataFrame(new_data)
+
+    def _ipython_key_completions_(self):
+        # allows for tab completion when doing df['c
+        return self.columns
+
+
+
+
+
+
+
