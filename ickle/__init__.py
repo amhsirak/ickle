@@ -213,5 +213,19 @@ class DataFrame:
                 raise ValueError('item must be a one-column boolean DataFrame')
             # value[arr] -> NumPy does boolean selection. 
             return DataFrame({col: value[arr] for col, value in self._data.items()})
+        
+        if isinstance(item, tuple):
+            return self._getitem_tuple(item)
+        else:
+            raise TypeError('Selection can be made only with a string, a list or a tuple')
+
+    def _getitem_tuple(self, item):
+        # simultaneous selection of rows and columns -> df[row, col]
+        if len(item) != 2:
+            raise ValueError('Pass either a single string or a two-item tuple inside the selection operator.')
+
+
+
+
 
 
