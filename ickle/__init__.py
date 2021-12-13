@@ -226,6 +226,16 @@ class DataFrame:
 
         if isinstance(row_selection, int):
             row_selection = [row_selection]
+
+        # df[df['a'] < 10, 'b']
+        elif isinstance(row_selection, DataFrame):
+            if row_selection.shape[1] != 1:
+                raise ValueError('Can only pass a one column DataFrame for selection')
+            row_selection = next(iter(row_selection._data.values()))
+            if row_selection.dtype.kind != 'b':
+                raise TypeError('DataFrame must be a boolean')
+            elif not isinstance(row_selection, (list, slice)):
+                raise TypeError('Row selection must be either an int, slice, list, or DataFrame')
         
 
         if isinstance(col_selection, int):
