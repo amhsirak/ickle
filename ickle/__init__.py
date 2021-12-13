@@ -249,6 +249,10 @@ class DataFrame:
         
         return DataFrame(new_data)
 
+    def _ipython_key_completions_(self):
+        # allows for tab completion when doing df['c
+        return self.columns
+
 
 
 
