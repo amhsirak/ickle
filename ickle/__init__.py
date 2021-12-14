@@ -251,7 +251,24 @@ class DataFrame:
                     # assuming col is a string
                     new_col_selection.append(col)
             col_selection = new_col_selection
-                    
+        elif isinstance(col_selection, slice):
+            start = col_selection.start
+            stop = col_selection.stop
+            step = col_selection.step
+
+            if isinstance(start, str):
+                start = self.columns.index(start)
+            
+            if isinstance(stop, str):
+                # added 1 to include the last column
+                stop = self.columns.index(stop) + 1
+            
+            # if isinstance(step, int):
+            #     raise TypeError('step must be of type integer')
+            col_selection = self.columns[start:stop:step]
+        else:
+            raise TypeError('column selection must be either int, string, list or slice')
+
         new_data = {}
         for col in col_selection:
             new_data[col] = self._data[col][row_selection]
