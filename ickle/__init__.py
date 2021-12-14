@@ -226,7 +226,6 @@ class DataFrame:
 
         if isinstance(row_selection, int):
             row_selection = [row_selection]
-
         # df[df['a'] < 10, 'b']
         elif isinstance(row_selection, DataFrame):
             if row_selection.shape[1] != 1:
@@ -242,7 +241,34 @@ class DataFrame:
             col_selection = [self.columns[col_selection]]
         elif isinstance(col_selection, str):
             col_selection = [col_selection]
-        
+        elif isinstance(col_selection, list):
+            new_col_selection = []
+            for col in col_selection:
+                if isinstance(col, int):
+                    # converting col to string
+                    new_col_selection.append(self.columns[col])
+                else:
+                    # assuming col is a string
+                    new_col_selection.append(col)
+            col_selection = new_col_selection
+        elif isinstance(col_selection, slice):
+            start = col_selection.start
+            stop = col_selection.stop
+            step = col_selection.step
+
+            if isinstance(start, str):
+                start = self.columns.index(start)
+            
+            if isinstance(stop, str):
+                # added 1 to include the last column
+                stop = self.columns.index(stop) + 1
+            
+            # if isinstance(step, int):
+            #     raise TypeError('step must be of type integer')
+            col_selection = self.columns[start:stop:step]
+        else:
+            raise TypeError('column selection must be either int, string, list or slice')
+
         new_data = {}
         for col in col_selection:
             new_data[col] = self._data[col][row_selection]
@@ -252,6 +278,36 @@ class DataFrame:
     def _ipython_key_completions_(self):
         # allows for tab completion when doing df['c
         return self.columns
+
+    def __setitem__(self, key, value):
+        # add a new column or overwrite an exisiting column
+        if not isinstance(key, str):
+            raise NotImplementedError('Can only set a single column')
+
+        if isinstance(value, np.ndarray):
+            if value.ndim != 1:
+                raise ValueError('The setting array must be one dimensional')
+            if len(value) != len(self):
+                raise ValueError('Setting array must be of the same length as the DataFrame')
+        elif isinstance(value, DataFrame):
+            if value.shape[1] != 1:
+                raise ValueError('Setting DataFrame must be one column')
+            if len(value) != len(self):
+                raise ValueError('Setting and Calling DataFrames must be the same length')
+            # reassign value to the underlying numpy array of the column.
+            value = next(iter(value._data.values()))
+        elif isinstance(value, (int, str, bool, float)):
+            value = np.repeat(value, len(self))
+        else:
+            raise TypeError('Setting value must either be a NumPy array, DataFrame, integer, string, float, or boolean')
+
+        if value.dtype.kind == 'U':
+            value = value.astype('O')
+        
+        self._data[key] = value
+
+        
+
 
 
 
