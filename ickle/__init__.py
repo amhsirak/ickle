@@ -226,7 +226,6 @@ class DataFrame:
 
         if isinstance(row_selection, int):
             row_selection = [row_selection]
-
         # df[df['a'] < 10, 'b']
         elif isinstance(row_selection, DataFrame):
             if row_selection.shape[1] != 1:
@@ -242,7 +241,17 @@ class DataFrame:
             col_selection = [self.columns[col_selection]]
         elif isinstance(col_selection, str):
             col_selection = [col_selection]
-        
+        elif isinstance(col_selection, list):
+            new_col_selection = []
+            for col in col_selection:
+                if isinstance(col, int):
+                    # converting col to string
+                    new_col_selection.append(self.columns[col])
+                else:
+                    # assuming col is a string
+                    new_col_selection.append(col)
+            col_selection = new_col_selection
+                    
         new_data = {}
         for col in col_selection:
             new_data[col] = self._data[col][row_selection]
