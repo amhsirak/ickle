@@ -279,6 +279,36 @@ class DataFrame:
         # allows for tab completion when doing df['c
         return self.columns
 
+    def __setitem__(self, key, value):
+        # add a new column or overwrite an exisiting column
+        if not isinstance(key, str):
+            raise NotImplementedError('Can only set a single column')
+
+        if isinstance(value, np.ndarray):
+            if value.ndim != 1:
+                raise ValueError('The setting array must be one dimensional')
+            if len(value) != len(self):
+                raise ValueError('Setting array must be of the same length as the DataFrame')
+        elif isinstance(value, DataFrame):
+            if value.shape[1] != 1:
+                raise ValueError('Setting DataFrame must be one column')
+            if len(value) != len(self):
+                raise ValueError('Setting and Calling DataFrames must be the same length')
+            # reassign value to the underlying numpy array of the column.
+            value = next(iter(value._data.values()))
+        elif isinstance(value, (int, str, bool, float)):
+            value = np.repeat(value, len(self))
+        else:
+            raise TypeError('Setting value must either be a NumPy array, DataFrame, integer, string, float, or boolean')
+
+        if value.dtype.kind == 'U':
+            value = value.astype('O')
+        
+        self._data[key] = value
+
+        
+
+
 
 
 
