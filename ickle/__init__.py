@@ -389,6 +389,23 @@ class DataFrame:
                 pass
         return DataFrame(new_data)
 
+    def isna(self):
+        """
+        Determines whether each value in the DataFrame is missing or not
+
+        Returns
+        -------
+        A DataFrame of booleans the same size as the calling DataFrame
+        """
+        new_data = {}
+        for col, value in self._data.items():
+            kind = value.dtype.kind
+            if kind == 'O':
+                new_data[col] = value == None
+            else:
+                new_data[col] = np.isnan(value)
+        return DataFrame(new_data)
+
 
 
 
