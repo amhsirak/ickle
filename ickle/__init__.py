@@ -306,7 +306,33 @@ class DataFrame:
         
         self._data[key] = value
 
-        
+    def head(self, n=5):
+        """
+        Return the first n rows
+
+        Parameters
+        ----------
+        n: int
+
+        Returns
+        -------
+        DataFrame
+        """
+        return self[:n, :]
+
+    def tail(self, n=5):
+        """
+        Return the last n rows
+
+        Parameters
+        ----------
+        n: int
+
+        Returns
+        -------
+        DataFrame
+        """
+        return self[-n:, :]
 
 
 
