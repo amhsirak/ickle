@@ -417,10 +417,31 @@ class DataFrame:
         new_data = {}
         df = self.isna()
         length = len(df)        
-        for col, value in df._data.values():
+        for col, value in df._data.items():
             val = length - value.sum()
             new_data[col] = np.array([val])
         return DataFrame(new_data)
+
+    # In Pandas, only series have unique method, not DataFrames
+    def unique(self):
+        """
+        Find the unique values of each column
+
+        Returns
+        -------
+        A list of one-column DataFrames
+        """
+        # @ToDo: Cover the case for missing values in strings
+        dfs = []
+        for col, value in self._data.items():
+            new_data = {col: np.unique(value)}
+            dfs.append(DataFrame(new_data))
+        if len(dfs) == 1:
+            return dfs[0]
+        return dfs
+
+
+
         
 
 
