@@ -306,7 +306,156 @@ class DataFrame:
         
         self._data[key] = value
 
+    def head(self, n=5):
+        """
+        Return the first n rows
+
+        Parameters
+        ----------
+        n: int
+
+        Returns
+        -------
+        DataFrame
+        """
+        return self[:n, :]
+
+    def tail(self, n=5):
+        """
+        Return the last n rows
+
+        Parameters
+        ----------
+        n: int
+
+        Returns
+        -------
+        DataFrame
+        """
+        return self[-n:, :]
+
+    ### Aggregation Methods ###
+
+    def min(self):
+        return self._agg(np.min)
+
+    def max(self):
+        return self._agg(np.max)
+
+    def mean(self):
+        return self._agg(np.mean)
+
+    def median(self):
+        return self._agg(np.median)
+
+    def sum(self):
+        return self._agg(np.sum)
+
+    def var(self):
+        return self._agg(np.var)
+
+    def std(self):
+        return self._agg(np.std)
+
+    def all(self):
+        return self._agg(np.all)
+
+    def any(self):
+        return self._agg(np.any)
+
+    def argmax(self):
+        return self._agg(np.argmax)
+
+    def argmin(self):
+        return self._agg(np.argmin)
+
+    def _agg(self, aggfunc):
+        """
+        Generic aggregation function that applies the aggregation to each column
+
+        Parameters
+        ---------
+        aggfunc: str of the aggregation function name in NumPy
+
+        Returns
+        -------
+        DataFrame
+        """
+        new_data = {}
+        for col, value in self._data.items():
+            try: 
+                new_data[col] = np.array([aggfunc(value)])
+            except TypeError:
+                pass
+        return DataFrame(new_data)
+
+    def isna(self):
+        """
+        Determines whether each value in the DataFrame is missing or not
+
+        Returns
+        -------
+        A DataFrame of booleans the same size as the calling DataFrame
+        """
+        new_data = {}
+        for col, value in self._data.items():
+            kind = value.dtype.kind
+            if kind == 'O':
+                new_data[col] = value == None
+            else:
+                new_data[col] = np.isnan(value)
+        return DataFrame(new_data)
+
+    def count(self):
+        """
+        Counts the number of non-missing values per column
+
+        Returns
+        -------
+        DataFrame
+        """
+        new_data = {}
+        df = self.isna()
+        length = len(df)        
+        for col, value in df._data.items():
+            val = length - value.sum()
+            new_data[col] = np.array([val])
+        return DataFrame(new_data)
+
+    # In Pandas, only series have unique method, not DataFrames
+    def unique(self):
+        """
+        Find the unique values of each column
+
+        Returns
+        -------
+        A list of one-column DataFrames
+        """
+        # @ToDo: Cover the case for missing values in strings
+        dfs = []
+        for col, value in self._data.items():
+            new_data = {col: np.unique(value)}
+            dfs.append(DataFrame(new_data))
+        if len(dfs) == 1:
+            return dfs[0]
+        return dfs
+
+    def nunique(self):
+        """
+        Find the number of unique values in each column
+
+        Returns
+        -------
+        A DataFrame
+        """
+        new_data = {}
+        for col, value in self._data.items():
+            new_data[col] = np.array([len(np.unique(value))])
+        return DataFrame(new_data)
+
+
         
+
 
 
 
