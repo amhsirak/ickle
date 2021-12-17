@@ -453,7 +453,7 @@ class DataFrame:
             new_data[col] = np.array([len(np.unique(value))])
         return DataFrame(new_data)
 
-    def value_counts(self):
+    def value_counts(self, normalize=False):
         """
         Returns the frequency of each unique value for each column
 
@@ -468,14 +468,16 @@ class DataFrame:
         """
         dfs = []
         for col, value in self._data.items():
-            uniques, counts = np.unique(value, return_counts=True)
+            uniques, raw_counts = np.unique(value, return_counts=True)
 
             # Sort counts from greatest to lowest
-            order = np.argsort(-counts)
+            order = np.argsort(-raw_counts)
             uniques = uniques[order]
-            counts = counts[order]
+            raw_counts = raw_counts[order]
 
-            df = DataFrame({col: uniques, 'count': counts })
+            if normalize:
+                raw_counts = raw_counts / raw_counts.sum()
+            df = DataFrame({col: uniques, 'count': raw_counts })
             dfs.append(df)
         if len(dfs) == 1:
             return dfs[0]
