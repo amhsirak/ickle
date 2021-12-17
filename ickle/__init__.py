@@ -453,6 +453,33 @@ class DataFrame:
             new_data[col] = np.array([len(np.unique(value))])
         return DataFrame(new_data)
 
+    def value_counts(self):
+        """
+        Returns the frequency of each unique value for each column
+
+        Parameters
+        ----------
+        normalize: bool
+        If True, returns the relative frequencies(percent)
+
+        Returns
+        -------
+        A list of DataFrames or a single DataFrame if one column
+        """
+        dfs = []
+        for col, value in self._data.items():
+            uniques, counts = np.unique(value, return_counts=True)
+
+            # Sort counts from greatest to lowest
+            order = np.argsort(-counts)
+            uniques = uniques[order]
+            counts = counts[order]
+
+            df = DataFrame({col: uniques, 'count': counts })
+            dfs.append(df)
+        if len(dfs) == 1:
+            return dfs[0]
+        return dfs 
 
         
 
