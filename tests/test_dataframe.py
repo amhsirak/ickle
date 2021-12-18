@@ -132,3 +132,6 @@ class TestSelection:
         df_result = df[:, cols]
         df_answer = ick.DataFrame({'a': a, 'c': c})
         assert_df_equals(df_result, df_answer)
+
+    def test_int_selection(self):
+        assert_df_equals(df[:, 3], ick.DataFrame({'d': d}))
