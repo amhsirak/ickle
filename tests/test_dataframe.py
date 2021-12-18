@@ -123,3 +123,12 @@ class TestSelection:
 
         with pytest.raises(TypeError):
             df_bool = ick.DataFrame({'col': np.array[1,2,3]})
+
+    def test_one_column_tuple(self):
+        assert_df_equals(df[:, 'a'], ick.DataFrame({'a': a}))
+
+    def test_multiple_columns_tuple(self):
+        cols = ['a', 'c']
+        df_result = df[:, cols]
+        df_answer = ick.DataFrame({'a': a, 'c': c})
+        assert_df_equals(df_result, df_answer)
