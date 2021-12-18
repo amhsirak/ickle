@@ -135,3 +135,14 @@ class TestSelection:
 
     def test_int_selection(self):
         assert_df_equals(df[:, 3], ick.DataFrame({'d': d}))
+
+    def test_simultaneous_tuple(self):
+        with pytest.raises(TypeError):
+            s = set()
+            df[s]
+
+        with pytest.raises(ValueError):
+            df[1, 2, 3]
+
+    # @ToDo: Write tests for single element, all row selections, list columns, column slices
+ 
