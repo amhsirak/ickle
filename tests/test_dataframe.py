@@ -145,4 +145,6 @@ class TestSelection:
             df[1, 2, 3]
 
     # @ToDo: Write tests for single element, all row selections, list columns, column slices
- 
+    
+    def test_tab_complete(self):
+        assert ['a', 'b', 'c', 'd', 'e'] == df._ipython_key_completions_()
