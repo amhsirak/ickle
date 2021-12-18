@@ -148,3 +148,16 @@ class TestSelection:
     
     def test_tab_complete(self):
         assert ['a', 'b', 'c', 'd', 'e'] == df._ipython_key_completions_()
+    
+    # TO-DO 
+    def test_new_column(self):
+        pass
+
+    def test_head_tails(self):
+        df_result = df.head(2)
+        df_answer = ick.DataFrame({'a': a[:2], 'b': b[:2], 'c': c[:2], 'd': d[:2], 'e': e[:2]})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df.tail(2)
+        df_answer = ick.DataFrame({'a': a[-2:], 'b': b[-2:], 'c': c[-2:], 'd': d[-2:], 'e': e[-2:]})
+        assert_df_equals(df_result, df_answer)
