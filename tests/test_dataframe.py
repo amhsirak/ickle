@@ -175,3 +175,9 @@ class TestAggregation:
         df_answer = ick.DataFrame({'a': np.array(['a'], dtype='O'), 'b': np.array([6]), 'c': np.array([np.nan])})
         assert_df_equals(df_result, df_answer)
 
+    def test_max(self):
+        df_result = df1.max()
+        df_answer = ick.DataFrame({'a': np.array(['c'], dtype='O'), 'b': np.array([21]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+
+
