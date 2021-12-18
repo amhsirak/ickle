@@ -184,3 +184,8 @@ class TestAggregation:
         df_result = df1.mean()
         df_answer = ick.DataFrame({'b': np.array([14.]), 'c': np.array([np.nan])})
         assert_df_equals(df_result, df_answer)
+    
+    def test_sum(self):
+        df_result = df1.sum()
+        df_answer = ick.DataFrame({'a': np.array(['abc'], dtype='O'), 'b': np.array([42]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
