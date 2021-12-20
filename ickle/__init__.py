@@ -526,6 +526,102 @@ class DataFrame:
                 new_data[col] = value
         return DataFrame(new_data)
 
+    ### Non-Aggregation Methods ###
+
+    def abs(self):
+        """
+        Takes the absolute value of each value in the DataFrame
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.abs)
+
+    def cummin(self):
+        """
+        Finds cumulative minimum by column
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.minimum.accumulate)
+
+    def cummax(self):
+        """
+        Finds cumulative maximum by column
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.maximum.accumulate)
+
+    def cumsum(self):
+        """
+        Finds cumulative sum by column
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.cumsum)
+
+    def clip(self, lower=None, upper=None):
+        """
+        All values less than lower will be set to lower
+        All values greater than upper will be set to upper
+        Parameters
+        ----------
+        lower: number or None
+        upper: number or None
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.clip, a_min=lower, a_max=upper)
+
+    def round(self, n):
+        """
+        Rounds values to the nearest n decimals
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.round, 'if', decimals=n)
+
+    def copy(self):
+        """
+        Copies the DataFrame
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.copy)
+
+    def _non_agg(self, funcname, **kwargs):
+        """
+        Generic non-aggregation function
+
+        Parameters
+        ----------
+        funcname: numpy function
+        args: extra arguments for certain functions
+
+        Returns
+        -------
+        A DataFrame
+        """
+        new_data = {}
+        for col, value in self._data.items():
+            if value.dtype.kind == 'O':
+                new_data[col] = value.copy()
+            else: 
+                new_data[col] = funcname(value, **kwargs)
+        return DataFrame(new_data)
+
+            
+
+
+
+    
 
         
 
