@@ -1,3 +1,4 @@
+from typing import Type
 import numpy as np
 
 __version__ = '0.0.1'
@@ -481,7 +482,27 @@ class DataFrame:
             dfs.append(df)
         if len(dfs) == 1:
             return dfs[0]
-        return dfs 
+        return dfs
+
+    def rename(self, columns):
+        """
+        Renames columns in the DataFrame
+
+        Parameters
+        ----------
+        columns: dict 
+            A dictionary mapping the old column name to the new column name
+        Returns
+        -------
+        A DataFrame
+        """
+        if not isinstance(columns, dict):
+            raise TypeError('`columns` must be a dictionary')
+        new_data = {}
+        for col, value in self._data.items():
+            new_col = columns.get(col, col)
+            new_data[new_col] = value
+        return DataFrame(new_data)
 
         
 
