@@ -504,6 +504,29 @@ class DataFrame:
             new_data[new_col] = value
         return DataFrame(new_data)
 
+    def drop(self, columns):
+        """
+        Drops one or more columns from a DataFrame
+
+        Parameters
+        ----------
+        columns: str or list of strings
+
+        Returns
+        -------
+        A DataFrame
+        """
+        if isinstance(columns, str):
+            columns = [columns]
+        elif not isinstance(columns, list):
+            raise TypeError('`columns` must be either a string or list')
+        new_data = {}
+        for col, value in self._data.items():
+            if not col in columns:
+                new_data[col] = value
+        return DataFrame(new_data)
+
+
         
 
 
