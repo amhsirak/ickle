@@ -1,4 +1,3 @@
-from typing import Type
 import numpy as np
 
 __version__ = '0.0.1'
@@ -596,6 +595,7 @@ class DataFrame:
         """
         return self._non_agg(np.copy)
 
+    # To Do: Write a better solution
     def _non_agg(self, funcname, **kwargs):
         """
         Generic non-aggregation function
@@ -617,19 +617,26 @@ class DataFrame:
                 new_data[col] = funcname(value, **kwargs)
         return DataFrame(new_data)
 
-            
+    def diff(self, n=1):
+        """
+        Take the difference between the current value and the nth value above it
 
+        Parameters
+        ----------
+        n: int
 
-
-    
-
-        
-
-
-
-
-
-
-
-
+        Returns
+        -------
+        A DataFrame
+        """
+        def func(value):
+            value = value.astype('float')
+            value_shifted = np.roll(value, n)
+            value = value - value_shifted
+            if n >= 0:
+                value[:n] = np.nan
+            else:
+                value[n:] = np.nan
+            return value
+        return self._non_agg(func)
 
