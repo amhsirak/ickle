@@ -161,3 +161,43 @@ class TestSelection:
         df_result = df.tail(2)
         df_answer = ick.DataFrame({'a': a[-2:], 'b': b[-2:], 'c': c[-2:], 'd': d[-2:], 'e': e[-2:]})
         assert_df_equals(df_result, df_answer)
+
+
+a1 = np.array(['a', 'b', 'c'])
+b1 = np.array([21, 15, 6])
+c1 = np.array([4.3, np.nan, 9.1])
+df1 = ick.DataFrame({'a': a1, 'b': b1, 'c': c1})
+
+class TestAggregation:
+
+    def test_min(self):
+        df_result = df1.min()
+        df_answer = ick.DataFrame({'a': np.array(['a'], dtype='O'), 'b': np.array([6]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_max(self):
+        df_result = df1.max()
+        df_answer = ick.DataFrame({'a': np.array(['c'], dtype='O'), 'b': np.array([21]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_mean(self):
+        df_result = df1.mean()
+        df_answer = ick.DataFrame({'b': np.array([14.]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+    
+    def test_sum(self):
+        df_result = df1.sum()
+        df_answer = ick.DataFrame({'a': np.array(['abc'], dtype='O'), 'b': np.array([42]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+    
+    def test_var(self):
+        df_result = df1.var()
+        df_answer = ick.DataFrame({'b': np.array([b1.var()]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+    
+    def test_std(self):
+        df_result = df1.std()
+        df_answer = ick.DataFrame({'b': np.array([b1.std()]), 'c': np.array([np.nan])})
+        assert_df_equals(df_result, df_answer)
+
+

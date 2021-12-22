@@ -481,15 +481,291 @@ class DataFrame:
             dfs.append(df)
         if len(dfs) == 1:
             return dfs[0]
-        return dfs 
+        return dfs
 
+    def rename(self, columns):
+        """
+        Renames columns in the DataFrame
+
+        Parameters
+        ----------
+        columns: dict 
+            A dictionary mapping the old column name to the new column name
+        Returns
+        -------
+        A DataFrame
+        """
+        if not isinstance(columns, dict):
+            raise TypeError('`columns` must be a dictionary')
+        new_data = {}
+        for col, value in self._data.items():
+            new_col = columns.get(col, col)
+            new_data[new_col] = value
+        return DataFrame(new_data)
+
+    def drop(self, columns):
+        """
+        Drops one or more columns from a DataFrame
+
+        Parameters
+        ----------
+        columns: str or list of strings
+
+        Returns
+        -------
+        A DataFrame
+        """
+        if isinstance(columns, str):
+            columns = [columns]
+        elif not isinstance(columns, list):
+            raise TypeError('`columns` must be either a string or list')
+        new_data = {}
+        for col, value in self._data.items():
+            if not col in columns:
+                new_data[col] = value
+        return DataFrame(new_data)
+
+    ### Non-Aggregation Methods ###
+
+    def abs(self):
+        """
+        Takes the absolute value of each value in the DataFrame
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.abs)
+
+    def cummin(self):
+        """
+        Finds cumulative minimum by column
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.minimum.accumulate)
+
+    def cummax(self):
+        """
+        Finds cumulative maximum by column
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.maximum.accumulate)
+
+    def cumsum(self):
+        """
+        Finds cumulative sum by column
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.cumsum)
+
+    def clip(self, lower=None, upper=None):
+        """
+        All values less than lower will be set to lower
+        All values greater than upper will be set to upper
+        Parameters
+        ----------
+        lower: number or None
+        upper: number or None
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.clip, a_min=lower, a_max=upper)
+
+    def round(self, n):
+        """
+        Rounds values to the nearest n decimals
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.round, 'if', decimals=n)
+
+    def copy(self):
+        """
+        Copies the DataFrame
+        Returns
+        -------
+        A DataFrame
+        """
+        return self._non_agg(np.copy)
+
+    # To Do: Write a better solution
+    def _non_agg(self, funcname, **kwargs):
+        """
+        Generic non-aggregation function
+
+        Parameters
+        ----------
+        funcname: numpy function
+        args: extra arguments for certain functions
+
+        Returns
+        -------
+        A DataFrame
+        """
+        new_data = {}
+        for col, value in self._data.items():
+            if value.dtype.kind == 'O':
+                new_data[col] = value.copy()
+            else: 
+                new_data[col] = funcname(value, **kwargs)
+        return DataFrame(new_data)
+
+    def diff(self, n=1):
+        """
+        Take the difference between the current value and the nth value above it
+
+        Parameters
+        ----------
+        n: int
+
+        Returns
+        -------
+        A DataFrame
+        """
+        def func(value):
+            value = value.astype('float')
+            value_shifted = np.roll(value, n)
+            value = value - value_shifted
+            if n >= 0:
+                value[:n] = np.nan
+            else:
+                value[n:] = np.nan
+            return value
+        return self._non_agg(func)
+
+    def pct_change(self, n=1):
+        """
+        Take the percentage difference between the current value and the nth value above it
+
+        Parameters
+        ----------
+        n: int
+
+        Returns
+        -------
+        A DataFrame
+        """
+        def func(value):
+            value = value.astype('float')
+            value_shifted = np.roll(value, n)
+            value = value - value_shifted
+            if n >= 0:
+                value[:n] = np.nan
+            else:
+                value[n:] = np.nan
+            return value / value_shifted
+        return self._non_agg(func)
+
+    ### Arithmetic and Comparison Operators ###
+    # https://docs.python.org/3/reference/datamodel.html#emulating-numeric-type
+
+    def __add__(self, other):
+        return self._oper('__add__', other)
+
+    def __radd__(self, other):
+        return self._oper('__radd__', other)
+
+    def __sub__(self, other):
+        return self._oper('__sub__', other)
+
+    def __rsub__(self, other):
+        return self._oper('__rsub__', other)
+
+    def __mul__(self, other):
+        return self._oper('__mul__', other)
+
+    def __rmul__(self, other):
+        return self._oper('__rmul__', other)
+
+    def __truediv__(self, other):
+        return self._oper('__truediv__', other)
+
+    def __rtruediv__(self, other):
+        return self._oper('__rtruediv__', other)
+
+    def __floordiv__(self, other):
+        return self._oper('__floordiv__', other)
+
+    def __rfloordiv__(self, other):
+        return self._oper('__rfloordiv__', other)
+
+    def __pow__(self, other):
+        return self._oper('__pow__', other)
+
+    def __rpow__(self, other):
+        return self._oper('__rpow__', other)
+
+    def __gt__(self, other):
+        return self._oper('__gt__', other)
+
+    def __lt__(self, other):
+        return self._oper('__lt__', other)
+
+    def __ge__(self, other):
+        return self._oper('__ge__', other)
+
+    def __le__(self, other):
+        return self._oper('__le__', other)
+
+    def __ne__(self, other):
+        return self._oper('__ne__', other)
+
+    def __eq__(self, other):
+        return self._oper('__eq__', other)
+
+    def _oper(self, op, other):
+        """
+        Generic operator method
+
+        Parameters
+        ----------
+        op: str Name of special method
+        other: the other object being operated on
+
+        Returns
+        -------
+        A DataFrame
+        """
+        if isinstance(other, DataFrame):
+            if other.shape[1] != 1:
+                raise ValueError('`other` must be a one-column DataFrame')
+            other = next(iter(other._data.values()))
+        new_data = {}
+        for col, value in self._data.items():
+            func = getattr(value, op)
+            new_data[col] = func(other)
+        return DataFrame(new_data)
+
+    def sort_values(self, by, asc=True):
+        """
+        Sort the DataFrame by one or more values
+
+        Parameters
+        ----------
+        by: str or list of column names
+        asc: boolean of sorting order
+
+        Returns
+        -------
+        DataFrame
+        """
+        if isinstance(by, str):
+            order = np.argsort(self._data[by])
+        elif isinstance(by, list):
+            cols = [self._data[col] for col in by[::-1]]
+            order = np.lexsort(cols)
+        else:
+            raise TypeError('`by` must be a str or a list')
+
+        if not asc:
+            order = order[::-1]
+        return self[order.tolist(), :]
         
-
-
-
-
-
-
-
-
 
