@@ -664,6 +664,7 @@ class DataFrame:
         return self._non_agg(func)
 
     ### Arithmetic and Comparison Operators ###
+
     # https://docs.python.org/3/reference/datamodel.html#emulating-numeric-type
 
     def __add__(self, other):
@@ -763,9 +764,37 @@ class DataFrame:
             order = np.lexsort(cols)
         else:
             raise TypeError('`by` must be a str or a list')
-
         if not asc:
             order = order[::-1]
         return self[order.tolist(), :]
         
+    def sample(self, n=None, frac=None, replace=False, seed=None):
+        """
+        Randomly samples rows of the DataFrame
 
+        Parameters
+        ----------
+        n: int
+            number of rows to return
+        frac: float
+            Proportion of the data to sample
+        replace: bool
+            Whether or not to sample with replacement
+        seed: int
+            Seed the random number generator
+        
+        Returns
+        -------
+        A DataFrame
+        """
+        if seed:
+            np.random.seed(seed)
+        if frac is not None:
+            if frac <= 0:
+                raise ValueError('`frac` must be positive')
+            n = int(frac * len(self))
+        if n is not None:
+            if not isinstance(n, int):
+                raise TypeError('`n` must be of type int')
+            rows = np.random.choice(range(len(self)), size=n, replace=replace)
+        return self[rows.tolist(), :]
