@@ -860,4 +860,10 @@ class DataFrame:
         else:
             for group1, group2, val in zip(row_data, col_data, val_data):
                 d[(group1, group2)].append(val)
+        # return d
 
+        agg_dict = {}
+        for group, val in d.items():
+            arr = np.array(val)
+            func = getattr(np, aggfunc)
+            agg_dict[group] = func[arr]
