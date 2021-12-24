@@ -881,3 +881,21 @@ class DataFrame:
             order = np.argsort(row_vals)
             new_data[rows] = row_vals[order]
             new_data[aggfunc] = vals[order]
+        else:
+            row_set = set()
+            col_set = set()
+            # group is a two-item tuple 
+            for group in agg_dict:
+                row_set.add(group[0])
+                col_set.add(group[1])
+            row_list = sorted(row_set)
+            col_list = sorted(col_set)
+            new_data[rows] = np.array(row_list)
+
+            for col in col_list:
+                new_vals = []
+                for row in row_list:
+                    new_val = agg_dict.get((row, col), np.nan)
+                    new_vals.append(new_val)
+                new_data[col] = np.array(new_vals)
+        return DataFrame(new_data)
