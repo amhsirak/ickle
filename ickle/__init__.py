@@ -875,9 +875,9 @@ class DataFrame:
                 value = agg_dict[col]
                 new_data[col] = np.array([value])
         elif pivot_type == 'rows':
-            row_array = np.array(list(agg_dict.keys()))
-            val_array = np.array(list(agg_dict.values()))
+            row_vals = np.array(list(agg_dict.keys()))
+            vals = np.array(list(agg_dict.values()))
 
-            order = np.argsort(row_array)
-            new_data[rows] = row_array[order]
-            new_data[aggfunc] = val_array[order]
+            order = np.argsort(row_vals)
+            new_data[rows] = row_vals[order]
+            new_data[aggfunc] = vals[order]
