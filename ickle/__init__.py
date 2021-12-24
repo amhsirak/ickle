@@ -56,6 +56,7 @@ class DataFrame:
     def __len__(self):
         """
         Make the built-in `len` function work with our dataframe
+
         Returns
         -------
         int: The number of rows in the dataframe
@@ -567,10 +568,12 @@ class DataFrame:
         """
         All values less than lower will be set to lower
         All values greater than upper will be set to upper
+
         Parameters
         ----------
         lower: number or None
         upper: number or None
+
         Returns
         -------
         A DataFrame
@@ -580,6 +583,7 @@ class DataFrame:
     def round(self, n):
         """
         Rounds values to the nearest n decimals
+
         Returns
         -------
         A DataFrame
@@ -589,6 +593,7 @@ class DataFrame:
     def copy(self):
         """
         Copies the DataFrame
+
         Returns
         -------
         A DataFrame
@@ -798,3 +803,48 @@ class DataFrame:
                 raise TypeError('`n` must be of type int')
             rows = np.random.choice(range(len(self)), size=n, replace=replace)
         return self[rows.tolist(), :]
+    
+    def pivot_table(self, rows=None, columns=None, values=None, aggfunc=None):
+        """
+        Creates a pivot table from one or two 'grouping' columns
+
+        Parameters
+        ----------
+        rows: str of column name to group by
+            Optional
+        columns: str of column name to group by
+            Optional
+        values: str of column name to aggregate
+            Required
+        aggfunc: str of aggregation function
+
+        Returns
+        -------
+        A DataFrame
+        """
+        if rows is None and columns is None:
+            raise ValueError('`rows` or `columns` both cannot be `None`')
+
+        if values is not None:
+            val_data = self._data[values]
+            if aggfunc is None:
+                raise ValueError('You must provide `aggfunc` if `values` is provided')
+        else:
+            if aggfunc is None:
+                aggfunc = 'size'
+                val_data = np.empty(len(self))
+            else:
+                raise ValueError('You cannot provide `aggfunc` when `values` is `None`')
+
+        if rows is not None:
+            row_data = self._data[rows]
+        
+        if columns is not None:
+            col_data = self._data[columns]
+
+        if rows is None:
+            pivot_type = 'columns'
+        elif columns is None:
+            pivot_type = 'rows'
+        else:
+            pivot_type = 'all'
