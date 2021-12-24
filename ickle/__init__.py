@@ -860,10 +860,24 @@ class DataFrame:
         else:
             for group1, group2, val in zip(row_data, col_data, val_data):
                 d[(group1, group2)].append(val)
-        # return d
 
+        # aggregation function
         agg_dict = {}
         for group, val in d.items():
             arr = np.array(val)
             func = getattr(np, aggfunc)
             agg_dict[group] = func[arr]
+
+        # dataframe representation
+        new_data = {}
+        if pivot_type == 'columns':
+            for col in sorted(agg_dict):
+                value = agg_dict[col]
+                new_data[col] = np.array([value])
+        elif pivot_type == 'rows':
+            row_array = np.array(list(agg_dict.keys()))
+            val_array = np.array(list(agg_dict.values()))
+
+            order = np.argsort(row_array)
+            new_data[rows] = row_array[order]
+            new_data[aggfunc] = val_array[order]
