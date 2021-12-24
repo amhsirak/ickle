@@ -56,6 +56,7 @@ class DataFrame:
     def __len__(self):
         """
         Make the built-in `len` function work with our dataframe
+
         Returns
         -------
         int: The number of rows in the dataframe
@@ -567,10 +568,12 @@ class DataFrame:
         """
         All values less than lower will be set to lower
         All values greater than upper will be set to upper
+
         Parameters
         ----------
         lower: number or None
         upper: number or None
+
         Returns
         -------
         A DataFrame
@@ -580,6 +583,7 @@ class DataFrame:
     def round(self, n):
         """
         Rounds values to the nearest n decimals
+
         Returns
         -------
         A DataFrame
@@ -589,6 +593,7 @@ class DataFrame:
     def copy(self):
         """
         Copies the DataFrame
+
         Returns
         -------
         A DataFrame
@@ -664,6 +669,7 @@ class DataFrame:
         return self._non_agg(func)
 
     ### Arithmetic and Comparison Operators ###
+
     # https://docs.python.org/3/reference/datamodel.html#emulating-numeric-type
 
     def __add__(self, other):
@@ -763,9 +769,133 @@ class DataFrame:
             order = np.lexsort(cols)
         else:
             raise TypeError('`by` must be a str or a list')
-
         if not asc:
             order = order[::-1]
         return self[order.tolist(), :]
         
+    def sample(self, n=None, frac=None, replace=False, seed=None):
+        """
+        Randomly samples rows of the DataFrame
 
+        Parameters
+        ----------
+        n: int
+            number of rows to return
+        frac: float
+            Proportion of the data to sample
+        replace: bool
+            Whether or not to sample with replacement
+        seed: int
+            Seed the random number generator
+        
+        Returns
+        -------
+        A DataFrame
+        """
+        if seed:
+            np.random.seed(seed)
+        if frac is not None:
+            if frac <= 0:
+                raise ValueError('`frac` must be positive')
+            n = int(frac * len(self))
+        if n is not None:
+            if not isinstance(n, int):
+                raise TypeError('`n` must be of type int')
+            rows = np.random.choice(range(len(self)), size=n, replace=replace)
+        return self[rows.tolist(), :]
+    
+    def pivot_table(self, rows=None, columns=None, values=None, aggfunc=None):
+        """
+        Creates a pivot table from one or two 'grouping' columns
+
+        Parameters
+        ----------
+        rows: str of column name to group by
+            Optional
+        columns: str of column name to group by
+            Optional
+        values: str of column name to aggregate
+            Required
+        aggfunc: str of aggregation function
+
+        Returns
+        -------
+        A DataFrame
+        """
+        if rows is None and columns is None:
+            raise ValueError('`rows` or `columns` both cannot be `None`')
+
+        if values is not None:
+            val_data = self._data[values]
+            if aggfunc is None:
+                raise ValueError('You must provide `aggfunc` if `values` is provided')
+        else:
+            if aggfunc is None:
+                aggfunc = 'size'
+                val_data = np.empty(len(self))
+            else:
+                raise ValueError('You cannot provide `aggfunc` when `values` is `None`')
+
+        if rows is not None:
+            row_data = self._data[rows]
+        
+        if columns is not None:
+            col_data = self._data[columns]
+
+        if rows is None:
+            pivot_type = 'columns'
+        elif columns is None:
+            pivot_type = 'rows'
+        else:
+            pivot_type = 'all'
+
+        from collections import defaultdict
+        d = defaultdict(list)
+        if pivot_type == 'columns':
+            for group, val in zip(col_data, val_data):
+                d[group].append(val)
+        elif pivot_type == 'rows':
+            for group, val in zip(row_data, val_data):
+                d[group].append(val)
+        else:
+            for group1, group2, val in zip(row_data, col_data, val_data):
+                d[(group1, group2)].append(val)
+
+        # aggregation function
+        agg_dict = {}
+        for group, val in d.items():
+            arr = np.array(val)
+            func = getattr(np, aggfunc)
+            agg_dict[group] = func[arr]
+
+        # dataframe representation
+        new_data = {}
+        if pivot_type == 'columns':
+            for col in sorted(agg_dict):
+                value = agg_dict[col]
+                new_data[col] = np.array([value])
+        elif pivot_type == 'rows':
+            row_vals = np.array(list(agg_dict.keys()))
+            vals = np.array(list(agg_dict.values()))
+
+            order = np.argsort(row_vals)
+            new_data[rows] = row_vals[order]
+            new_data[aggfunc] = vals[order]
+        else:
+            row_set = set()
+            col_set = set()
+            # group is a two-item tuple 
+            for group in agg_dict:
+                row_set.add(group[0])
+                col_set.add(group[1])
+            row_list = sorted(row_set)
+            col_list = sorted(col_set)
+            new_data[rows] = np.array(row_list)
+
+            for col in col_list:
+                new_vals = []
+                for row in row_list:
+                    new_val = agg_dict.get((row, col), np.nan)
+                    new_vals.append(new_val)
+                new_data[col] = np.array(new_vals)
+        return DataFrame(new_data)
