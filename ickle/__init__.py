@@ -918,7 +918,7 @@ class DataFrame:
             getattr(DataFrame, name).__doc__ = agg_doc.format(name)
 
 class StringMethods:
-
+    # TODO : Add Docs for each method
     def __init__(self, df):
         self._df = df
 
@@ -1031,3 +1031,27 @@ class StringMethods:
                 new_val = method(val, *args)
                 new_values.append(new_val)
         return DataFrame({col: np.array(new_values)})
+
+    def read_csv(file):
+        """
+        Read a simple comma-separated-value(CSV) file as a DataFrame
+
+        Parameters
+        ----------
+        file: str of file location
+
+        Returns
+        -------
+        A DataFrame
+        """
+        from collections import defaultdict
+        data = defaultdict(list)
+        with open(file) as f:
+            header = f.readline()
+            column_names = header.strip('\n').split(',')
+       
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)
+        # return data
