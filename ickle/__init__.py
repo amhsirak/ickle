@@ -899,3 +899,17 @@ class DataFrame:
                     new_vals.append(new_val)
                 new_data[col] = np.array(new_vals)
         return DataFrame(new_data)
+
+    def _add_docs(self):
+        agg_names = ['min', 'max', 'mean', 'median', 'sum', 'var', 'std', 'any', 'all', 'argmax', 'argmin']
+        agg_doc = \
+        """
+        Find the {} of each column
+
+        Returns
+        -------
+        A DataFrame
+        """
+        for name in agg_names:
+            getattr(DataFrame, name).__doc__ = agg_doc.format(name)
+            
