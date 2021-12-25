@@ -1032,6 +1032,7 @@ class StringMethods:
                 new_values.append(new_val)
         return DataFrame({col: np.array(new_values)})
 
+    # TODO: Handle case of boolean data
     def read_csv(file):
         """
         Read a simple comma-separated-value(CSV) file as a DataFrame
@@ -1055,3 +1056,14 @@ class StringMethods:
                 for col, val in zip(column_names, values):
                     data[col].append(val)
         # return data
+        new_data = {}
+        # vals is a list of strings
+        for col, vals in data.items():
+            try:
+                new_data[col] = np.array(vals, dtype='int')
+            except ValueError:
+                try:
+                    new_data[col] = np.array(vals, dtype='float')
+                except ValueError:
+                    new_data[col] = np.array(vals, dtype='O')
+        return DataFrame(new_data)
