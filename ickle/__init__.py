@@ -152,7 +152,61 @@ class DataFrame:
             </tbody>
         </table>
         """
-        pass
+        html = '<table><thead><tr><th></th>'
+        for col in self.columns:
+            html += f"<th>{col:10}</th>"
+
+        html += '</tr></thead>'
+        html += "<tbody>"
+
+        only_head = False
+        num_head = 10
+        num_tail = 10
+        if len(self) <= 20:
+            only_head = True
+            num_head = len(self)
+
+        for i in range(num_head):
+            html += f'<tr><td><strong>{i}</strong></td>'
+            for col, values in self._data.items():
+                kind = values.dtype.kind
+                if kind == 'f':
+                    html += f'<td>{values[i]:10.3f}</td>'
+                elif kind == 'b':
+                    html += f'<td>{values[i]}</td>'
+                elif kind == 'O':
+                    v = values[i]
+                    if v is None:
+                        v = 'None'
+                    html += f'<td>{v:10}</td>'
+                else:
+                    html += f'<td>{values[i]:10}</td>'
+            html += '</tr>'
+
+        if not only_head:
+            html += '<tr><strong><td>...</td></strong>'
+            for i in range(len(self.columns)):
+                html += '<td>...</td>'
+            html += '</tr>'
+            for i in range(-num_tail, 0):
+                html += f'<tr><td><strong>{len(self) + i}</strong></td>'
+                for col, values in self._data.items():
+                    kind = values.dtype.kind
+                    if kind == 'f':
+                        html += f'<td>{values[i]:10.3f}</td>'
+                    elif kind == 'b':
+                        html += f'<td>{values[i]}</td>'
+                    elif kind == 'O':
+                        v = values[i]
+                        if v is None:
+                            v = 'None'
+                        html += f'<td>{v:10}</td>'
+                    else:
+                        html += f'<td>{values[i]:10}</td>'
+                html += '</tr>'
+
+        html += '</tbody></table>'
+        return html
 
     @property
     def values(self):
@@ -1032,38 +1086,39 @@ class StringMethods:
                 new_values.append(new_val)
         return DataFrame({col: np.array(new_values)})
 
-    # TODO: Handle case of boolean data
-    def read_csv(file):
-        """
-        Read a simple comma-separated-value(CSV) file as a DataFrame
+# TODO: Handle case of boolean data
 
-        Parameters
-        ----------
-        file: str of file location
+def read_csv(file):
+    """
+    Read a simple comma-separated-value(CSV) file as a DataFrame
 
-        Returns
-        -------
-        A DataFrame
-        """
-        from collections import defaultdict
-        data = defaultdict(list)
-        with open(file) as f:
-            header = f.readline()
-            column_names = header.strip('\n').split(',')
-       
-            for line in f:
-                values = line.strip('\n').split(',')
-                for col, val in zip(column_names, values):
-                    data[col].append(val)
-        # return data
-        new_data = {}
-        # vals is a list of strings
-        for col, vals in data.items():
+    Parameters
+    ----------
+    file: str of file location
+
+    Returns
+    -------
+    A DataFrame
+    """
+    from collections import defaultdict
+    data = defaultdict(list)
+    with open(file) as f:
+        header = f.readline()
+        column_names = header.strip('\n').split(',')
+    
+        for line in f:
+            values = line.strip('\n').split(',')
+            for col, val in zip(column_names, values):
+                data[col].append(val)
+    # return data
+    new_data = {}
+    # vals is a list of strings
+    for col, vals in data.items():
+        try:
+            new_data[col] = np.array(vals, dtype='int')
+        except ValueError:
             try:
-                new_data[col] = np.array(vals, dtype='int')
+                new_data[col] = np.array(vals, dtype='float')
             except ValueError:
-                try:
-                    new_data[col] = np.array(vals, dtype='float')
-                except ValueError:
-                    new_data[col] = np.array(vals, dtype='O')
-        return DataFrame(new_data)
+                new_data[col] = np.array(vals, dtype='O')
+    return DataFrame(new_data)
