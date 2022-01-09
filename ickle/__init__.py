@@ -238,16 +238,13 @@ class DataFrame:
 
     def __getitem__(self, item):
         """
-        Use the brackets operator to simutaneously select rows and columns
-
+        Use the brackets operator to simultaneously select rows and columns
         A single string selects one column -> df['colname']
-        A list of strings selects multiple columns -> df[['colname1','colname2']]
-        A one column DataFrame of boolean that filters rows -> df[df_bool]
-
+        A list of strings selects multiple columns -> df[['colname1', 'colname2']]
+        A one column DataFrame of booleans that filters rows -> df[df_bool]
         Row and column selection simultaneously -> df[rs, cs]
             where cs and rs can be integers, slices, or a list of integers
             rs can also be a one-column boolean DataFrame
-
         Returns
         -------
         A subset of the original DataFrame
@@ -255,46 +252,51 @@ class DataFrame:
         # select a single column -> df['colname']
         if isinstance(item, str):
             return DataFrame({item: self._data[item]})
-        
-        # select multiple columns -> df[['colname1', 'colname2' ]]
+
+        # select multiple columns -> df[['colname1', 'colname2']]
         if isinstance(item, list):
             return DataFrame({col: self._data[col] for col in item})
-        
-        # boolean selection -> df['height'] > 5.5
+
+        # boolean selection
         if isinstance(item, DataFrame):
             if item.shape[1] != 1:
-                raise ValueError('Only pass a single- column DataFrame for selection')
+                raise ValueError('Can only pass a one column DataFrame for selection')
+
             # _data.values()[0] cannot be used as
             # 'dict_values' doesn't allow indexing
-            arr = next(iter(item._data.values()))
-            if arr.dtype.kind != 'b':
-                raise ValueError('item must be a one-column boolean DataFrame')
-            # value[arr] -> NumPy does boolean selection. 
-            return DataFrame({col: value[arr] for col, value in self._data.items()})
-        
+            bool_arr = next(iter(item._data.values()))
+            if bool_arr.dtype.kind != 'b':
+                raise TypeError('DataFrame must be a boolean')
+
+            new_data = {}
+            for col, values in self._data.items():
+                # values[bool_arr] -> NumPy does boolean selection. 
+                new_data[col] = values[bool_arr]
+            return DataFrame(new_data)
+
         if isinstance(item, tuple):
             return self._getitem_tuple(item)
         else:
-            raise TypeError('Selection can be made only with a string, a list or a tuple')
+            raise TypeError('Select with either a string, a list, or a row and column '
+                            'simultaneous selection')
 
     def _getitem_tuple(self, item):
-        # simultaneous selection of rows and columns -> df[row, col]
+        # simultaneous selection of rows and cols -> df[rs, cs]
         if len(item) != 2:
-            raise ValueError('Pass either a single string or a two-item tuple inside the selection operator.')
+            raise ValueError('Pass either a single string or a two-item tuple inside the '
+                                'selection operator.')
         row_selection, col_selection = item
-
         if isinstance(row_selection, int):
             row_selection = [row_selection]
-        # df[df['a'] < 10, 'b']
+        # df[df['a'] < 10, 'b'] 
         elif isinstance(row_selection, DataFrame):
             if row_selection.shape[1] != 1:
                 raise ValueError('Can only pass a one column DataFrame for selection')
             row_selection = next(iter(row_selection._data.values()))
             if row_selection.dtype.kind != 'b':
                 raise TypeError('DataFrame must be a boolean')
-            elif not isinstance(row_selection, (list, slice)):
-                raise TypeError('Row selection must be either an int, slice, list, or DataFrame')
-        
+        elif not isinstance(row_selection, (list, slice)):
+            raise TypeError('Row selection must be either an int, slice, list, or DataFrame')
 
         if isinstance(col_selection, int):
             col_selection = [self.columns[col_selection]]
@@ -314,24 +316,21 @@ class DataFrame:
             start = col_selection.start
             stop = col_selection.stop
             step = col_selection.step
-
             if isinstance(start, str):
                 start = self.columns.index(start)
-            
             if isinstance(stop, str):
                 # added 1 to include the last column
                 stop = self.columns.index(stop) + 1
-            
-            # if isinstance(step, int):
-            #     raise TypeError('step must be of type integer')
+            if isinstance(step, int):
+                raise TypeError('`step` must be of type integer')
+
             col_selection = self.columns[start:stop:step]
         else:
-            raise TypeError('column selection must be either int, string, list or slice')
+            raise TypeError('Column selection must be either an int, string, list, or slice')
 
         new_data = {}
         for col in col_selection:
             new_data[col] = self._data[col][row_selection]
-        
         return DataFrame(new_data)
 
     def _ipython_key_completions_(self):
@@ -659,7 +658,7 @@ class DataFrame:
         return self._non_agg(np.copy)
 
     # To Do: Write a better solution
-    def _non_agg(self, funcname, **kwargs):
+    def _non_agg(self, funcname, kinds='bif', **kwargs):
         """
         Generic non-aggregation function
 
@@ -673,11 +672,12 @@ class DataFrame:
         A DataFrame
         """
         new_data = {}
-        for col, value in self._data.items():
-            if value.dtype.kind == 'O':
-                new_data[col] = value.copy()
-            else: 
-                new_data[col] = funcname(value, **kwargs)
+        for col, values in self._data.items():
+            if values.dtype.kind in kinds:
+                values = funcname(values, **kwargs)
+            else:
+                values = values.copy()
+            new_data[col] = values
         return DataFrame(new_data)
 
     def diff(self, n=1):
@@ -924,7 +924,7 @@ class DataFrame:
         for group, val in d.items():
             arr = np.array(val)
             func = getattr(np, aggfunc)
-            agg_dict[group] = func[arr]
+            agg_dict[group] = func(arr)
 
         # dataframe representation
         new_data = {}
