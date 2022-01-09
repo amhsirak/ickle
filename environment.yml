@@ -1,6 +1,5 @@
 name: ickle
 dependencies:
 - python=3.9
-- pandas
 - jupyter
 - pytest
