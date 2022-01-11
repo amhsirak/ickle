@@ -3,7 +3,7 @@
 
 ## Installation
 
-Make sure you have Python installed on your system.
+Ickle can be installed via pip
 
 ```
 pip install ickle
@@ -11,14 +11,8 @@ pip install ickle
 
 ## Documentation
 
-Read the documentation here:
-
-## Features
-
-## Contributions
-
-You can read Contribution guidelines in CONTRIBUTING.md
+Read the documentation here: 
 
 <hr />
-Copyright 2021 <a href='https://github.com/karishmashuklaa/'>Karishma Shukla</a>
+Copyright 2022 <a href='https://github.com/karishmashuklaa/'>Karishma Shukla</a>
 
