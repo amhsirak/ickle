@@ -11,7 +11,7 @@ pip install ickle
 
 ## Documentation
 
-Read the documentation here: 
+Read the documentation <a href="https://nbviewer.org/github/karishmashuklaa/ickle/blob/master/Ickle%20Documentation.ipynb">here</a>
 
 <hr />
 Copyright 2022 <a href='https://github.com/karishmashuklaa/'>Karishma Shukla</a>
