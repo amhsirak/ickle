@@ -7,7 +7,7 @@ def readme():
         README = f.read()
     return README
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 DESCRIPTION = 'Tiny Data Analysis Library'
 
 setup(
@@ -20,8 +20,8 @@ setup(
     long_description_content_type="text/markdown",
     long_description= readme(),
     packages=find_packages(),
-    install_requires=['python', 'pytest'],
-    keywords=['data-analysis', 'numpy', 'data', 'python', 'library', 'pandas', 'ickle'],
+    install_requires=['numpy', 'pytest'],
+    keywords=['data-analysis', 'numpy', 'data', 'python', 'library', 'pandas', 'ickle', 'datascience'],
     license="MIT",
     classifiers=[
         "Intended Audience :: Developers",
