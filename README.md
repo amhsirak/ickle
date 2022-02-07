@@ -1,5 +1,9 @@
-## 📈 Ickle - Data Analysis Library 
-**A tiny data analysis library for common day-to-day analytical tasks. Written in Python, for Python.**
+<h1 align="center"> 📈 Ickle - Data Analysis Library</h1>
+
+### A tiny data analysis library for common day-to-day analytical tasks. Written in Python, for Python
+
+[![Downloads](https://static.pepy.tech/personalized-badge/ickle?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=Downloads)](https://pepy.tech/project/ickle)
+[![PyPI version](https://badge.fury.io/py/ickle.svg)](https://badge.fury.io/py/ickle)
 
 ## Installation
 
