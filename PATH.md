@@ -1,5 +1,7 @@
 <b>Quick Note</b>: Ickle is at a very initial stage and this path will keep changing. You may recommend / work on features you wish to add even if they are not mentioned here after a discussion with us.
 
+<b>Another Quick Note</b>: Currently we do not have proper documentation site. We are simply documenting everything in a Jupyter Notebook. Want to help us creating docs? Reach out on Discord: `@carishma`
+
 <hr />
 
 ### Path
