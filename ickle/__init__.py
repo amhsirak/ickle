@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 
 __version__ = '0.0.1'
@@ -38,7 +39,6 @@ class DataFrame:
                 raise TypeError('values of `data` must be NumPy arrays')
             if value.ndim != 1:
                 raise ValueError('values of `data` must be some one-dimensional array')
-    
     # Each column of data in the DataFrame must have the same number of elements.
     def _check_array_lengths(self,data):
         for i,value in enumerate(data.values()):
@@ -101,7 +101,8 @@ class DataFrame:
         if not isinstance(columns, list):
             raise TypeError('`columns` must be a list')
         if len(columns) != len(self._data):
-            raise ValueError('Newly created `columns` must have the same length as the current DataFrame')
+            raise ValueError('Newly created `columns` \
+                 must have the same length as the current DataFrame')
         for col in columns:
             if not isinstance(col, str):
                 raise TypeError('All column names must be of type str')
@@ -213,7 +214,7 @@ class DataFrame:
         """
         Returns
         -------
-        A single 2D NumPy array of all the columns of data. 
+        A single 2D NumPy array of all the columns of data.
         """
         # https://numpy.org/doc/stable/reference/generated/numpy.column_stack.html
         return np.column_stack(list(self._data.values()))
@@ -270,7 +271,7 @@ class DataFrame:
 
             new_data = {}
             for col, values in self._data.items():
-                # values[bool_arr] -> NumPy does boolean selection. 
+                # values[bool_arr] -> NumPy does boolean selection.
                 new_data[col] = values[bool_arr]
             return DataFrame(new_data)
 
@@ -288,7 +289,7 @@ class DataFrame:
         row_selection, col_selection = item
         if isinstance(row_selection, int):
             row_selection = [row_selection]
-        # df[df['a'] < 10, 'b'] 
+        # df[df['a'] < 10, 'b']
         elif isinstance(row_selection, DataFrame):
             if row_selection.shape[1] != 1:
                 raise ValueError('Can only pass a one column DataFrame for selection')
@@ -357,11 +358,11 @@ class DataFrame:
         elif isinstance(value, (int, str, bool, float)):
             value = np.repeat(value, len(self))
         else:
-            raise TypeError('Setting value must either be a NumPy array, DataFrame, integer, string, float, or boolean')
+            raise TypeError('Setting value must either be a NumPy array,\
+                DataFrame, integer, string, float, or boolean')
 
         if value.dtype.kind == 'U':
             value = value.astype('O')
-        
         self._data[key] = value
 
     def head(self, n=5):
@@ -441,7 +442,7 @@ class DataFrame:
         """
         new_data = {}
         for col, value in self._data.items():
-            try: 
+            try:
                 new_data[col] = np.array([aggfunc(value)])
             except TypeError:
                 pass
@@ -474,7 +475,7 @@ class DataFrame:
         """
         new_data = {}
         df = self.isna()
-        length = len(df)        
+        length = len(df)
         for col, value in df._data.items():
             val = length - value.sum()
             new_data[col] = np.array([val])
@@ -547,7 +548,7 @@ class DataFrame:
 
         Parameters
         ----------
-        columns: dict 
+        columns: dict
             A dictionary mapping the old column name to the new column name
         Returns
         -------
@@ -830,7 +831,7 @@ class DataFrame:
         if not asc:
             order = order[::-1]
         return self[order.tolist(), :]
-        
+
     def sample(self, n=None, frac=None, replace=False, seed=None):
         """
         Randomly samples rows of the DataFrame
@@ -845,7 +846,7 @@ class DataFrame:
             Whether or not to sample with replacement
         seed: int
             Seed the random number generator
-        
+
         Returns
         -------
         A DataFrame
@@ -861,7 +862,7 @@ class DataFrame:
                 raise TypeError('`n` must be of type int')
             rows = np.random.choice(range(len(self)), size=n, replace=replace)
         return self[rows.tolist(), :]
-    
+
     def pivot_table(self, rows=None, columns=None, values=None, aggfunc=None):
         """
         Creates a pivot table from one or two 'grouping' columns
@@ -896,7 +897,7 @@ class DataFrame:
 
         if rows is not None:
             row_data = self._data[rows]
-        
+
         if columns is not None:
             col_data = self._data[columns]
 
@@ -942,7 +943,7 @@ class DataFrame:
         else:
             row_set = set()
             col_set = set()
-            # group is a two-item tuple 
+            # group is a two-item tuple
             for group in agg_dict:
                 row_set.add(group[0])
                 col_set.add(group[1])
@@ -959,7 +960,8 @@ class DataFrame:
         return DataFrame(new_data)
 
     def _add_docs(self):
-        agg_names = ['min', 'max', 'mean', 'median', 'sum', 'var', 'std', 'any', 'all', 'argmax', 'argmin']
+        agg_names = ['min', 'max', 'mean', 'median', \
+            'sum', 'var', 'std', 'any', 'all', 'argmax', 'argmin']
         agg_doc = \
         """
         Find the {} of each column
