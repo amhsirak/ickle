@@ -1,4 +1,6 @@
+# %load C:\Users\priya\OneDrive\Documents\ickle\ickle\__init__.py
 import numpy as np
+import csv
 
 __version__ = '0.0.1'
 
@@ -1088,13 +1090,14 @@ class StringMethods:
 
 # TODO: Handle case of boolean data
 
-def read_csv(file):
+def read_csv(file,header=0):
     """
     Read a simple comma-separated-value(CSV) file as a DataFrame
 
     Parameters
     ----------
     file: str of file location
+    header: index value of header 
 
     Returns
     -------
@@ -1103,13 +1106,33 @@ def read_csv(file):
     from collections import defaultdict
     data = defaultdict(list)
     with open(file) as f:
-        header = f.readline()
-        column_names = header.strip('\n').split(',')
-    
-        for line in f:
-            values = line.strip('\n').split(',')
-            for col, val in zip(column_names, values):
-                data[col].append(val)
+        reader = csv.reader(f, delimiter=',', skipinitialspace=True)
+        if header == None:
+            with open(file) as nc:
+                readers = csv.reader(nc, delimiter=',', skipinitialspace=True)
+                first_row = next(readers)
+                num_cols = len(first_row)
+                column_names = [str(n) for n in range(0,num_cols)]  
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)    
+        elif header != 0:
+            for header in range(0,header):
+                skip_header_number = next(reader)
+                num_cols = len(skip_header_number)
+                column_names = [str(n) for n in range(0,num_cols)]  
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)    
+        else:   
+            header = f.readline()
+            column_names = header.strip('\n').split(',')    
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)
     # return data
     new_data = {}
     # vals is a list of strings
@@ -1122,3 +1145,4 @@ def read_csv(file):
             except ValueError:
                 new_data[col] = np.array(vals, dtype='O')
     return DataFrame(new_data)
+
