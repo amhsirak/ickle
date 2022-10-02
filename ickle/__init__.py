@@ -1,4 +1,3 @@
-# %load C:\Users\priya\OneDrive\Documents\ickle\ickle\__init__.py
 import numpy as np
 import csv
 
@@ -1145,4 +1144,3 @@ def read_csv(file,header=0):
             except ValueError:
                 new_data[col] = np.array(vals, dtype='O')
     return DataFrame(new_data)
-
