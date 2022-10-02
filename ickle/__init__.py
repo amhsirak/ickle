@@ -42,11 +42,9 @@ class DataFrame:
     
     # Each column of data in the DataFrame must have the same number of elements.
     def _check_array_lengths(self,data):
-        for i,value in enumerate(data.values()):
-            if i == 0:
-                length = len(value)
-            elif length != len(value):
-                raise ValueError('All arrays must be of the same length')
+        lengths = map(len, data.values())
+        if len(set(lengths)) != 1:
+            raise ValueError('All arrays must be of the same length')
 
     def _convert_unicode_to_object(self,data):
         # All data from `data` is stored in this `new_data` dictionary
