@@ -4,7 +4,7 @@
 
 ## Contributing Guidelines
 - If you're planning to implement a new feature please discuss with us before you start coding so you won't end up working on something that we don't want to implement. Create an Issue with proper name and content for discussion.
-- Need help in understanding the code? <a href="mailto:karishmashuklaa@gmail.com">Reach out via Email </a> or Discord - `@carishma` 
+- Need help in understanding the code? <a href="mailto:karishmashuklaa@gmail.com">Reach out via Email </a> or Discord - `carishma#3453` 
 
 - For Contributing to this repository
   1. Fork the repository.
