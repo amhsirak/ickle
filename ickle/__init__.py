@@ -231,14 +231,6 @@ class DataFrame:
         dtypes = map(lambda value : DTYPE_NAME[value.dtype.kind], self._data.values())
         new_data = {'Column Name': col_names, 'Data Type': np.fromiter(dtypes, 'U6')}
 
-        # Alternative way using list
-        # dtypes = []
-        # for value in self._data.values():
-        #     kind = value.dtype.kind
-        #     dtype = DTYPE_NAME[kind]
-        #     dtypes.append(dtype)
-        # new_data = {'Column Name': col_names, 'Data Type': np.array(dtypes)}
-
         return DataFrame(new_data)
 
     def __getitem__(self, item):
