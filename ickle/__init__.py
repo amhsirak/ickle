@@ -226,12 +226,10 @@ class DataFrame:
         """
         DTYPE_NAME = {'O': 'string', 'i': 'int', 'f': 'float', 'b': 'bool'}
         col_names = np.array(self.columns)
-        dtypes = []
-        for value in self._data.values():
-            kind = value.dtype.kind
-            dtype = DTYPE_NAME[kind]
-            dtypes.append(dtype)
-        new_data = {'Column Name': col_names, 'Data Type': np.array(dtypes)}
+
+        # Using iterable
+        dtypes = map(lambda value : DTYPE_NAME[value.dtype.kind], self._data.values())
+        new_data = {'Column Name': col_names, 'Data Type': np.fromiter(dtypes, 'U6')}
 
         return DataFrame(new_data)
 
