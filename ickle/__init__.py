@@ -1,4 +1,5 @@
 import numpy as np
+import csv
 
 __version__ = '0.0.1'
 
@@ -41,11 +42,9 @@ class DataFrame:
     
     # Each column of data in the DataFrame must have the same number of elements.
     def _check_array_lengths(self,data):
-        for i,value in enumerate(data.values()):
-            if i == 0:
-                length = len(value)
-            elif length != len(value):
-                raise ValueError('All arrays must be of the same length')
+        lengths = map(len, data.values())
+        if len(set(lengths)) != 1:
+            raise ValueError('All arrays must be of the same length')
 
     def _convert_unicode_to_object(self,data):
         # All data from `data` is stored in this `new_data` dictionary
@@ -227,12 +226,10 @@ class DataFrame:
         """
         DTYPE_NAME = {'O': 'string', 'i': 'int', 'f': 'float', 'b': 'bool'}
         col_names = np.array(self.columns)
-        dtypes = []
-        for value in self._data.values():
-            kind = value.dtype.kind
-            dtype = DTYPE_NAME[kind]
-            dtypes.append(dtype)
-        new_data = {'Column Name': col_names, 'Data Type': np.array(dtypes)}
+
+        # Using iterable
+        dtypes = map(lambda value : DTYPE_NAME[value.dtype.kind], self._data.values())
+        new_data = {'Column Name': col_names, 'Data Type': np.fromiter(dtypes, 'U6')}
 
         return DataFrame(new_data)
 
@@ -1088,13 +1085,14 @@ class StringMethods:
 
 # TODO: Handle case of boolean data
 
-def read_csv(file):
+def read_csv(file,header=0):
     """
     Read a simple comma-separated-value(CSV) file as a DataFrame
 
     Parameters
     ----------
     file: str of file location
+    header: index value of header 
 
     Returns
     -------
@@ -1103,13 +1101,33 @@ def read_csv(file):
     from collections import defaultdict
     data = defaultdict(list)
     with open(file) as f:
-        header = f.readline()
-        column_names = header.strip('\n').split(',')
-    
-        for line in f:
-            values = line.strip('\n').split(',')
-            for col, val in zip(column_names, values):
-                data[col].append(val)
+        reader = csv.reader(f, delimiter=',', skipinitialspace=True)
+        if header == None:
+            with open(file) as nc:
+                readers = csv.reader(nc, delimiter=',', skipinitialspace=True)
+                first_row = next(readers)
+                num_cols = len(first_row)
+                column_names = [str(n) for n in range(0,num_cols)]  
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)    
+        elif header != 0:
+            for header in range(0,header):
+                skip_header_number = next(reader)
+                num_cols = len(skip_header_number)
+                column_names = [str(n) for n in range(0,num_cols)]  
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)    
+        else:   
+            header = f.readline()
+            column_names = header.strip('\n').split(',')    
+            for line in f:
+                values = line.strip('\n').split(',')
+                for col, val in zip(column_names, values):
+                    data[col].append(val)
     # return data
     new_data = {}
     # vals is a list of strings
