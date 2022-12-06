@@ -1167,9 +1167,7 @@ def read_sql(sql,db_engine):
         for record in rs:
             for col,val in zip(columns,record):
                 data[col].append(val)
-    
-    # print(data)
-    # return data
+
     new_data = {}
     # vals is a list of strings
     for col, vals in data.items():
