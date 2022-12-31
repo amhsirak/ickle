@@ -1128,7 +1128,6 @@ def read_csv(file,header=0):
                 values = line.strip('\n').split(',')
                 for col, val in zip(column_names, values):
                     data[col].append(val)
-    # return data
     new_data = {}
     # vals is a list of strings
     for col, vals in data.items():
