@@ -807,38 +807,38 @@ class TestStrings:
         assert_df_equals(result, answer)
 
 
-df_emp = ick.read_csv('dataset/employee.csv')
+df_emp = ick.read_csv(file='dataset/employee.csv', header=None)
 
 
 class TestReadCSV:
 
     def test_columns(self):
         result = df_emp.columns
-        answer = ['dept', 'race', 'gender', 'salary']
+        answer = ['0', '1', '2', '3']
         assert result == answer
 
     def test_data_types(self):
         df_result = df_emp.dtypes
-        cols = np.array(['dept', 'race', 'gender', 'salary'], dtype='O')
+        cols = np.array(['0', '1', '2', '3'], dtype='O')
         dtypes = np.array(['string', 'string', 'string', 'int'], dtype='O')
         df_answer = ick.DataFrame({'Column Name': cols,
                                    'Data Type': dtypes})
         assert_df_equals(df_result, df_answer)
 
     def test_sum(self):
-        result = df_emp['salary'].sum()
+        result = df_emp['3'].sum()
         answer = 86387875
         assert result == answer
 
     def test_head(self):
-        data = {'dept': np.array(['Houston Police Department-HPD',
+        data = {'0': np.array(['Houston Police Department-HPD',
                                   'Houston Fire Department (HFD)',
                                   'Houston Police Department-HPD',
                                   'Public Works & Engineering-PWE',
                                   'Houston Airport System (HAS)'], dtype='O'),
-                'race': np.array(['White', 'White', 'Black', 'Asian', 'White'], dtype='O'),
-                'gender': np.array(['Male', 'Male', 'Male', 'Male', 'Male'], dtype='O'),
-                'salary': np.array([45279, 63166, 66614, 71680, 42390])}
+                '1': np.array(['White', 'White', 'Black', 'Asian', 'White'], dtype='O'),
+                '2': np.array(['Male', 'Male', 'Male', 'Male', 'Male'], dtype='O'),
+                '3': np.array([45279, 63166, 66614, 71680, 42390])}
         result = df_emp.head()
         answer = ick.DataFrame(data)
         assert_df_equals(result, answer)
