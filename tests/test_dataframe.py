@@ -831,14 +831,14 @@ class TestReadCSV:
         assert result == answer
 
     def test_head(self):
-        data = {'dept': np.array(['Houston Police Department-HPD',
+        data = {'0': np.array(['Houston Police Department-HPD',
                                   'Houston Fire Department (HFD)',
                                   'Houston Police Department-HPD',
                                   'Public Works & Engineering-PWE',
                                   'Houston Airport System (HAS)'], dtype='O'),
-                'race': np.array(['White', 'White', 'Black', 'Asian', 'White'], dtype='O'),
-                'gender': np.array(['Male', 'Male', 'Male', 'Male', 'Male'], dtype='O'),
-                'salary': np.array([45279, 63166, 66614, 71680, 42390])}
+                '1': np.array(['White', 'White', 'Black', 'Asian', 'White'], dtype='O'),
+                '2': np.array(['Male', 'Male', 'Male', 'Male', 'Male'], dtype='O'),
+                '3': np.array([45279, 63166, 66614, 71680, 42390])}
         result = df_emp.head()
         answer = ick.DataFrame(data)
         assert_df_equals(result, answer)
