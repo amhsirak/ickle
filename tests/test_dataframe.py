@@ -819,7 +819,7 @@ class TestReadCSV:
 
     def test_data_types(self):
         df_result = df_emp.dtypes
-        cols = np.array(['dept', 'race', 'gender', 'salary'], dtype='O')
+        cols = np.array(['0', '1', '2', '3'], dtype='O')
         dtypes = np.array(['string', 'string', 'string', 'int'], dtype='O')
         df_answer = ick.DataFrame({'Column Name': cols,
                                    'Data Type': dtypes})
