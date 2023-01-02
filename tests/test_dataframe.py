@@ -826,7 +826,7 @@ class TestReadCSV:
         assert_df_equals(df_result, df_answer)
 
     def test_sum(self):
-        result = df_emp['salary'].sum()
+        result = df_emp['3'].sum()
         answer = 86387875
         assert result == answer
 
