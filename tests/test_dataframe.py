@@ -807,14 +807,14 @@ class TestStrings:
         assert_df_equals(result, answer)
 
 
-df_emp = ick.read_csv('dataset/employee.csv')
+df_emp = ick.read_csv(file='dataset/employee.csv', header=None)
 
 
 class TestReadCSV:
 
     def test_columns(self):
         result = df_emp.columns
-        answer = ['dept', 'race', 'gender', 'salary']
+        answer = ['0', '1', '2', '3']
         assert result == answer
 
     def test_data_types(self):
