@@ -811,8 +811,7 @@ class TestStrings:
         assert_df_equals(result, answer)
 
 
-df_emp = ick.read_csv('dataset\employee.csv')
-
+df_emp = ick.read_csv(file='dataset/employee.csv', header=None)
 
 class TestReadCSV:
 
