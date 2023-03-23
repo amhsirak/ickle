@@ -1,5 +1,9 @@
 import numpy as np
 from numpy.testing import assert_array_equal
+from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.engine import URL
+from datetime import datetime
 import pytest
 
 import ickle as ick
@@ -806,9 +810,7 @@ class TestStrings:
         answer = ick.DataFrame({'movie': movie})
         assert_df_equals(result, answer)
 
-
 df_emp = ick.read_csv(file='dataset/employee.csv', header=None)
-
 
 class TestReadCSV:
 
@@ -842,3 +844,51 @@ class TestReadCSV:
         result = df_emp.head()
         answer = ick.DataFrame(data)
         assert_df_equals(result, answer)
+
+Base = declarative_base()
+
+class Author(Base):
+    __tablename__ = 'authors'
+    id = Column(Integer(), primary_key=True)
+    firstname = Column(String(100))
+    lastname = Column(String(100))
+    email = Column(String(255), nullable=False)
+    joined = Column(DateTime(), default=datetime.now)
+
+url = URL.create(
+        drivername="postgresql",
+        username="postgres",
+        password="pri123",
+        host="localhost",
+        port="5432",
+        database="spotify_trends"
+)  
+engine = create_engine(url)
+Session = sessionmaker(bind=engine)
+
+@pytest.fixture(scope='module')
+def db_session():
+    Base.metadata.create_all(engine)
+    session = Session()
+    yield session
+    session.rollback()
+    session.close()
+
+@pytest.fixture(scope='module')
+def valid_author():
+    valid_author = Author(
+        firstname="John",
+        lastname="Doe",
+        email="upchh@example.com"
+    )
+    return valid_author
+
+class TestSqlDataframe:
+    def test_sql_dataframe(self, db_session, valid_author):
+        db_session.add(valid_author)
+        db_session.commit()
+        sql = 'SELECT id, firstname, lastname, email FROM authors'
+        df = ick.read_sql(sql,url)
+        assert df["firstname"] == "John"
+        assert df["lastname"] == "Doe"
+        assert df["email"] == "upchh@example.com"

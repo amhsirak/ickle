@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import sqlalchemy
 
 __version__ = '1.0.2'
 
@@ -1088,12 +1089,10 @@ class StringMethods:
 def read_csv(file,header=0):
     """
     Read a simple comma-separated-value(CSV) file as a DataFrame
-
     Parameters
     ----------
     file: str of file location
     header: index value of header 
-
     Returns
     -------
     A DataFrame
@@ -1128,6 +1127,46 @@ def read_csv(file,header=0):
                 values = line.strip('\n').split(',')
                 for col, val in zip(column_names, values):
                     data[col].append(val)
+    new_data = {}
+    # vals is a list of strings
+    for col, vals in data.items():
+        try:
+            new_data[col] = np.array(vals, dtype='int')
+        except ValueError:
+            try:
+                new_data[col] = np.array(vals, dtype='float')
+            except ValueError:
+                new_data[col] = np.array(vals, dtype='O')
+    return DataFrame(new_data)
+
+
+def read_sql(sql,db_engine):
+    """
+    Read a sql table based on sql query as a DataFrame
+
+    Parameters
+    ----------
+    file: str of file location
+    header: index value of header 
+
+    Returns
+    -------
+    A DataFrame
+    """
+    from collections import defaultdict
+    data = defaultdict(list)
+    conn = sqlalchemy.create_engine(db_engine) 
+    with conn.connect() as con:
+        rs = con.execute(sql)
+        #get column names
+        columns = []
+        for elem in rs.cursor.description:
+            columns.append(elem[0])
+        #key,value mapping
+        for record in rs:
+            for col,val in zip(columns,record):
+                data[col].append(val)
+
     new_data = {}
     # vals is a list of strings
     for col, vals in data.items():
