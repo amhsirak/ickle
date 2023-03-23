@@ -857,11 +857,11 @@ class Author(Base):
 
 url = URL.create(
         drivername="postgresql",
-        username="postgres", #TODO: Remove this
-        password="pri123", #TODO: Remove this
-        host="localhost", #TODO: Remove this
+        username="postgres",
+        password="pri123",
+        host="localhost",
         port="5432",
-        database="spotify_trends" #TODO: Remove this
+        database="spotify_trends"
 )  
 engine = create_engine(url)
 Session = sessionmaker(bind=engine)
