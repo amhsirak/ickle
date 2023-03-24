@@ -1,6 +1,7 @@
 import numpy as np
 import csv
 import sqlalchemy
+from sqlalchemy.engine import URL
 
 __version__ = '1.0.2'
 
@@ -1140,14 +1141,19 @@ def read_csv(file,header=0):
     return DataFrame(new_data)
 
 
-def read_sql(sql,db_engine):
+def read_sql(sql,drivername,username,password,host,port,database):
     """
     Read a sql table based on sql query as a DataFrame
 
     Parameters
     ----------
-    file: str of file location
-    header: index value of header 
+    sql: str of sql query to be executed
+    drivername: str of driver engine of the database
+    username: str of username to connect to the database
+    password: str of password to connect to the database
+    host: str of host to connect to the database
+    port: int of port to connect to the database
+    database: str of database name  
 
     Returns
     -------
@@ -1155,6 +1161,7 @@ def read_sql(sql,db_engine):
     """
     from collections import defaultdict
     data = defaultdict(list)
+    db_engine = URL.create(drivername,username,password,host,port,database) 
     conn = sqlalchemy.create_engine(db_engine) 
     with conn.connect() as con:
         rs = con.execute(sql)
@@ -1178,3 +1185,4 @@ def read_sql(sql,db_engine):
             except ValueError:
                 new_data[col] = np.array(vals, dtype='O')
     return DataFrame(new_data)
+
