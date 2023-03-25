@@ -8,7 +8,7 @@ def readme():
     return README
 
 VERSION = '1.0.3'
-DESCRIPTION = 'Tiny Data Analysis Library'
+DESCRIPTION = '🔍 Experimental DataFrame, statistics and analysis library for Python'
 
 setup(
     name="ickle",
