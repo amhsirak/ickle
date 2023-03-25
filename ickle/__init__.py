@@ -3,7 +3,7 @@ import csv
 import sqlalchemy
 from sqlalchemy.engine import URL
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 class DataFrame:
 
