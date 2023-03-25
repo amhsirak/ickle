@@ -7,7 +7,7 @@ def readme():
         README = f.read()
     return README
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 DESCRIPTION = 'Tiny Data Analysis Library'
 
 setup(
