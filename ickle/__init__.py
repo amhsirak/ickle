@@ -1194,4 +1194,8 @@ def read_excel(file_path, sheet_name=None):
     ----------
     file_path: str the path to the Excel file that you want to read
     sheet_name: str of sheet name
+
+    Returns
+    -------
+    A DataFrame
     """
