@@ -1,5 +1,6 @@
 import numpy as np
 import csv
+import openpyxl
 import sqlalchemy
 from sqlalchemy.engine import URL
 
@@ -1199,3 +1200,8 @@ def read_excel(file_path, sheet_name=None):
     -------
     A DataFrame
     """
+    workbook = openpyxl.load_workbook(filename=file_path, read_only=True)
+    if sheet_name is not None:
+        worksheet = workbook[sheet_name]
+    else:
+        worksheet = workbook.active
