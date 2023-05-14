@@ -1189,4 +1189,9 @@ def read_sql(sql,drivername,username,password,host,port,database):
 def read_excel(file_path, sheet_name=None):
     """
     Read a simple Excel file file as a DataFrame
+
+    Parameters
+    ----------
+    file_path: str the path to the Excel file that you want to read
+    sheet_name: str of sheet name
     """
