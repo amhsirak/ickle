@@ -1186,7 +1186,7 @@ def read_sql(sql,drivername,username,password,host,port,database):
                 new_data[col] = np.array(vals, dtype='O')
     return DataFrame(new_data)
 
-def read_excel():
+def read_excel(file_path, sheet_name=None):
     """
     Read a simple Excel file file as a DataFrame
     """
