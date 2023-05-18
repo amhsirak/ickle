@@ -1219,6 +1219,6 @@ def read_excel(file_path, sheet_name=None):
     for i, header in enumerate(headers):
         columns[header] = records[:, i]
     
-    print(DataFrame(columns))
+    return DataFrame(columns)
 
 read_excel(file_path='Book1.xlsx', sheet_name='Sheet1')
