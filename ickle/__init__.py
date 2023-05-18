@@ -1193,7 +1193,7 @@ def read_excel(file_path, sheet_name=None):
 
     Parameters
     ----------
-    file_path: str the path to the Excel file that you want to read
+    file_path: str of the path to the Excel file that you want to read
     sheet_name: str of sheet name
 
     Returns
