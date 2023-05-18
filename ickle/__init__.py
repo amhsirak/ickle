@@ -1189,7 +1189,7 @@ def read_sql(sql,drivername,username,password,host,port,database):
 
 def read_excel(file_path, sheet_name=None):
     """
-    Read a simple Excel file file as a DataFrame
+    Read a simple Excel file as a DataFrame
 
     Parameters
     ----------
