@@ -1220,5 +1220,3 @@ def read_excel(file_path, sheet_name=None):
         columns[header] = records[:, i]
     
     return DataFrame(columns)
-
-read_excel(file_path='Book1.xlsx', sheet_name='Sheet1')
