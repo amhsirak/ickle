@@ -1210,6 +1210,8 @@ def read_excel(file_path, sheet_name=None):
     for row in worksheet.iter_rows(values_only=True):
         data.append(row)
     
+    data = np.array(data)
+    
     headers = data[0]
     records = data[1:]
 
