@@ -1205,3 +1205,18 @@ def read_excel(file_path, sheet_name=None):
         worksheet = workbook[sheet_name]
     else:
         worksheet = workbook.active
+    
+    data = []
+    for row in worksheet.iter_rows(values_only=True):
+        data.append(row)
+    
+    headers = data[0]
+    records = data[1:]
+
+    columns = {}
+    for i, header in enumerate(headers):
+        columns[header] = records[:, i]
+    
+    print(DataFrame(columns))
+
+read_excel(file_path='Book1.xlsx', sheet_name='Sheet1')
