@@ -900,9 +900,9 @@ class TestReadExcel:
         df = ick.read_excel(file_path, sheet_name)
 
         expected_data = {
-            'Name': ['John', 'Sam', 'Max'],
-            'Age': [54, 23, 44],
-            'Country': ['USA', 'UK', 'Pakistan'],
+            'Name': np.array(['John', 'Sam', 'Max'], dtype='O'),
+            'Age': np.array([54, 23, 44], dtype='int64'),
+            'Country': np.array(['USA', 'UK', 'Pakistan'], dtype='O'),
         }
         expected_df = ick.DataFrame(expected_data)
 
