@@ -898,3 +898,9 @@ class TestReadExcel:
         file_path = 'dataset/Book1.xlsx'
         sheet_name = 'Sheet1'
         df = ick.read_excel(file_path, sheet_name)
+
+        expected_data = {
+            'Name': ['John', 'Sam', 'Max'],
+            'Age': [54, 23, 44],
+            'Country': ['USA', 'UK', 'Pakistan'],
+        }
