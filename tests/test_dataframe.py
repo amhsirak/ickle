@@ -904,3 +904,6 @@ class TestReadExcel:
             'Age': [54, 23, 44],
             'Country': ['USA', 'UK', 'Pakistan'],
         }
+        expected_df = ick.DataFrame(expected_data)
+
+        assert_df_equals(df, expected_df)
