@@ -901,7 +901,7 @@ class TestReadExcel:
 
         expected_data = {
             'Name': np.array(['John', 'Sam', 'Max'], dtype='O'),
-            'Age': np.array([54, 23, 44], dtype='int64'),
+            'Age': np.array(['54', '23', '44'], dtype='O'),
             'Country': np.array(['USA', 'UK', 'Pakistan'], dtype='O'),
         }
         expected_df = ick.DataFrame(expected_data)
