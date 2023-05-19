@@ -892,3 +892,9 @@ class TestSqlDataframe:
         assert df["firstname"] == "John"
         assert df["lastname"] == "Doe"
         assert df["email"] == "upchh@example.com"
+
+class TestReadExcel:
+    def test_read_excel(self):
+        file_path = 'dataset/Book1.xlsx'
+        sheet_name = 'Sheet1'
+        df = ick.read_excel(file_path, sheet_name)
