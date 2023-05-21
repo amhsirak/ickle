@@ -7,7 +7,7 @@ def readme():
         README = f.read()
     return README
 
-VERSION = '1.0.3'
+VERSION = '1.0.4'
 DESCRIPTION = '🔍 Experimental DataFrame, statistics and analysis library for Python'
 
 setup(

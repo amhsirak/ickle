@@ -4,3 +4,4 @@ dependencies:
 - jupyter
 - pytest
 - sqlalchemy
+- openpyxl

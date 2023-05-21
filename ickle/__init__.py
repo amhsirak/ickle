@@ -1,9 +1,10 @@
 import numpy as np
 import csv
+import openpyxl
 import sqlalchemy
 from sqlalchemy.engine import URL
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 class DataFrame:
 
@@ -1186,3 +1187,36 @@ def read_sql(sql,drivername,username,password,host,port,database):
                 new_data[col] = np.array(vals, dtype='O')
     return DataFrame(new_data)
 
+def read_excel(file_path, sheet_name=None):
+    """
+    Read a simple Excel file as a DataFrame
+
+    Parameters
+    ----------
+    file_path: str of the path to the Excel file that you want to read
+    sheet_name: str of sheet name
+
+    Returns
+    -------
+    A DataFrame
+    """
+    workbook = openpyxl.load_workbook(filename=file_path, read_only=True)
+    if sheet_name is not None:
+        worksheet = workbook[sheet_name]
+    else:
+        worksheet = workbook.active
+    
+    data = []
+    for row in worksheet.iter_rows(values_only=True):
+        data.append(row)
+    
+    data = np.array(data)
+    
+    headers = data[0]
+    records = data[1:]
+
+    columns = {}
+    for i, header in enumerate(headers):
+        columns[header] = records[:, i]
+    
+    return DataFrame(columns)
