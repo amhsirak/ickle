@@ -20,7 +20,7 @@
         - [x]  read_csv
         - [ ]  to_csv
     - [ ]  Excel
-        - [ ]  read_excel
+        - [x]  read_excel
         - [ ]  to_excel
     - [ ]  JSON
         - [ ]  read_json
@@ -35,7 +35,7 @@
         - [ ]  read_xml
         - [ ]  to_xml
     - [ ]  SQL
-        - [ ]  read_sql
+        - [x]  read_sql
         - [ ]  to_sql
 
 <hr />
