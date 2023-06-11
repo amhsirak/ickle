@@ -34,7 +34,7 @@ pip install ickle
     - [x]  read_csv
     - [ ]  to_csv
 - [ ]  Excel
-    - [ ]  read_excel
+    - [x]  read_excel
     - [ ]  to_excel
     
 ... and more. 🚀 Checkout [PATH.md](PATH.md) to see the roadmap.
