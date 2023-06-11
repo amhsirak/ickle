@@ -6,7 +6,7 @@
 
 ### Path
 
-- [x]  Dataframes and Visual Representation
+- [x]  Dataframe and Visual Representation
 - [x]  Basic properties (len, columns, shape, etc)
 - [x]  Subset Selection
 - [x]  Basic Methods (head, tail)
