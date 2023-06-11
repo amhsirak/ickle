@@ -63,3 +63,8 @@ df = ick.DataFrame(data)
 ## Documentation
 
 Read the documentation <a href="https://nbviewer.org/github/karishmashuklaa/ickle/blob/master/Ickle%20Documentation.ipynb">here</a>
+
+## Authors
+<a href="https://github.com/karishmashuklaa">@karishmashuklaa</a>
+
+<a href="https://github.com/psy-pri">@psy-pri</a>
