@@ -1,12 +1,12 @@
 <b>Quick Note</b>: Ickle is at a very initial stage and this path will keep changing. You may recommend / work on features you wish to add even if they are not mentioned here after a discussion with us.
 
-<b>Another Quick Note</b>: Currently we do not have proper documentation site. We are simply documenting everything in a Jupyter Notebook. Want to help us creating docs? Reach out on Discord: `@carishma`
+Currently we do not have proper documentation site. We are simply documenting everything in a Jupyter Notebook. Want to help us creating docs? Reach out on Discord: `@carishma#3453`
 
 <hr />
 
 ### Path
 
-- [x]  Dataframes and Visual Representation
+- [x]  Dataframe and Visual Representation
 - [x]  Basic properties (len, columns, shape, etc)
 - [x]  Subset Selection
 - [x]  Basic Methods (head, tail)
@@ -20,7 +20,7 @@
         - [x]  read_csv
         - [ ]  to_csv
     - [ ]  Excel
-        - [ ]  read_excel
+        - [x]  read_excel
         - [ ]  to_excel
     - [ ]  JSON
         - [ ]  read_json
@@ -35,7 +35,7 @@
         - [ ]  read_xml
         - [ ]  to_xml
     - [ ]  SQL
-        - [ ]  read_sql
+        - [x]  read_sql
         - [ ]  to_sql
 
 <hr />
